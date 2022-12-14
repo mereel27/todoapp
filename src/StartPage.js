@@ -1,6 +1,6 @@
 import '@fontsource/raleway';
 import Grid from '@mui/material/Grid';
-import { Typography} from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import './App.css';
 import TextCarousel from './Carousel';
 import Button from '@mui/material/Button';
@@ -64,7 +64,16 @@ export default function StartPage() {
           >
             Hi there! Welcome to
           </Typography>
-          <Logo />
+          <Box
+            sx={{
+              position: 'absolute',
+              left: '0',
+              right: '0',
+              top: '208px',
+            }}
+          >
+            <Logo />
+          </Box>
         </Grid>
       </Grid>
       <Grid item container>
@@ -76,7 +85,7 @@ export default function StartPage() {
           <TextCarousel />
         </Grid>
       </Grid>
-      <Grid item container sx={{ flexGrow: '1'}}>
+      <Grid item container sx={{ flexGrow: '1' }}>
         <Grid item sx={{ margin: 'auto auto 50px auto' }}>
           <Button
             variant="contained"

@@ -1,11 +1,28 @@
 :root {
-  --accent-color: #5A95FF;
-  --calendar-text-main: #25265E;
-  --calendar-text-disabled: #DFDFE4;
+  --accent-color: 90, 149, 255;
+  --accent-hover: rgb(69, 133, 252);
+  --secondary-accent-color: rgb(102, 112, 255);
+  --main-text-color: 5, 5, 5;
+  --calendar-text-main: rgb(37, 38, 94);
+  --calendar-text-disabled: rgb(223, 223, 228);
+  --hover-bg: rgba(235, 235, 235, 0.404);
+  --bottom-panel-blur: rgba(237, 244, 247, 0.827);
+  --bottom-panel-color: rgba(36, 59, 107, 0.502);
+  --day-view-background: rgb(248, 251, 252);
+  --icon-inactive-color: rgb(216, 216, 216);
+  --divider-hr: rgba(151, 151, 151, 0.36);
+  --input-placeholder: rgba(124, 135, 165, 0.598);
+  --event-orange: 249, 146, 49;
+  --event-cyan: 80, 227, 194;
+  --event-red: 255, 92, 92;
+  --event-blue: 74, 144, 226;
+  font-size: 14px;
+  --box-padding: 30px;
 }
 
 * {
   box-sizing: border-box;
+  font-family: "Raleway", sans-serif;
 }
 
 body {
@@ -15,7 +32,7 @@ body {
   font-family: "Raleway", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* overflow: hidden; */
+  font-size: 14px;
 }
 
 code {
