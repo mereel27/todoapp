@@ -1,29 +1,58 @@
+import { useState, memo, useCallback } from 'react';
+import { getTime } from './utils';
+import { Modal } from '@nextui-org/react';
 import MyCalendar from './MyCalendar';
-import { Modal } from '@mui/material';
-import { useState, memo } from 'react';
-import { formatDate } from './utils';
+import ModalButton from './ModalButton';
+import TimePicker from './TimePicker';
 
-export default memo(function DatePicker({ open, date, handleClose, handleSubmit }) {
-  const [currentDay, setCurrentDay] = useState(date);
-  console.log('date render')
+export default memo(function DatePicker({
+  open,
+  date,
+  handleClose,
+  handleSubmit,
+}) {
+  const [currentDate, setCurrentDate] = useState(date);
+  const [hours, setHours] = useState(getTime(date).hours);
+  const [minutes, setMinutes] = useState(getTime(date).minutes)
 
   const handleDayClick = (date) => {
-    if (!currentDay) {
-      setCurrentDay(date);
-    } else if (currentDay.getTime() === date.getTime()) {
-      setCurrentDay(null);
+    if (!currentDate) {
+      setCurrentDate(date);
+    } else if (
+      currentDate.getMonth() === date.getMonth() &&
+      currentDate.getDate() === date.getDate()
+    ) {
+      setCurrentDate(null);
     } else {
-      setCurrentDay(date);
+      setCurrentDate(date);
     }
   };
+
+  const handleOkButton = () => {
+    currentDate.setHours(hours, minutes);
+    handleSubmit(new Date(currentDate));
+  };
+
+  const handleHoursChange = useCallback((value) => setHours(value), []);
+  const handleMinutesChange = useCallback((value) => setMinutes(value), []);
+
   return (
-    <Modal open={open} onClose={handleClose} className="modal-container">
-      <div className="date-picker">
+    <Modal
+      open={open}
+      onClose={handleClose}
+      className="modal-container"
+      width="480px"
+      blur
+      closeButton
+    >
+      <Modal.Body css={{ padding: '$sm $lg' }}>
         <div className="date-picker__calendar-container">
           <MyCalendar
             onClickDay={handleDayClick}
             tileClassName={({ date }) =>
-              currentDay && formatDate(date) === formatDate(currentDay)
+              currentDate &&
+              (date.getDate() === currentDate.getDate()) &
+                (date.getMonth() === currentDate.getMonth())
                 ? 'current-day'
                 : null
             }
@@ -32,17 +61,31 @@ export default memo(function DatePicker({ open, date, handleClose, handleSubmit 
             minDetail="decade"
             className="date-picker__calendar"
           />
-          <div className="date-picker__buttons-container">
-            <button
-              onClick={() => handleSubmit(currentDay)}
-              className="modal-container__button"
-              disabled={currentDay ? false : true}
-            >
-              OK
-            </button>
-          </div>
         </div>
-      </div>
+        <TimePicker
+          hours={hours}
+          minutes={minutes}
+          handleHoursChange={handleHoursChange}
+          handleMinutesChange={handleMinutesChange}
+        />
+      </Modal.Body>
+      <Modal.Footer css={{ flexWrap: 'nowrap', padding: '$lg' }}>
+        <ModalButton
+          color="error"
+          flat
+          onPress={handleClose}
+          aria-label="Close modal"
+        >
+          Close
+        </ModalButton>
+        <ModalButton
+          shadow
+          disabled={currentDate ? false : true}
+          onPress={() => handleOkButton(currentDate)}
+        >
+          Ok
+        </ModalButton>
+      </Modal.Footer>
     </Modal>
   );
 });

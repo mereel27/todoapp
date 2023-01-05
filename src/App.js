@@ -1,69 +1,41 @@
-import '@fontsource/raleway';
 import './App.css';
 /* import StartPage from './StartPage'; */
 import CalendarView from './CalendarView';
-import { createTheme, ThemeProvider } from '@mui/material';
-
-const colors = {
-  border: '#979797',
-}
+import { createTheme, NextUIProvider } from '@nextui-org/react';
 
 const theme = createTheme({
-  components: {
-    MuiInputLabel: {
-      styleOverrides: {
-        root: {
-          fontWeight: 600,
-          color: 'inherit'
-        }
-      }
+  type: 'light', // it could be "light" or "dark"
+  theme: {
+    breakpoints: {
+      bp1: '320px'
     },
-    MuiInputBase: {
-      styleOverrides: {
-        input: {
-          '::placeholder': {
-            color: '#7C87A599'
-          },
-        },
-      }
+    colors: {
+      /* text: 'rgb(3, 27, 78)', */
+      accentColor: 'rgba(90, 149, 255)',
+      mainText: '#050505',
+      inputPlaceholder: 'rgba(124, 135, 165, 0.598)',
+      eventsBackground: 'rgba(237, 245, 255, 0.4)',
+      violetEvent: '#7828C8',
+      greenEvent: '#17C964',
+      orangeEvent: '#F5A524',
+      redEvent: '#F31260',
     },
-    MuiInput: {
-      styleOverrides: {
-        root: {
-          '::before': {
-            borderBottom: `1px solid ${colors.border}`
-          },
-          ':hover:not(.Mui-disabled):before': {
-            borderBottom: `1px solid`
-          },
-        }
-      }
-    }
+    space: {},
+    fonts: {
+      sans: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;",
+      mono: "Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono'",
+    },
   },
-  palette: {
-    primary: {
-      main: '#5A95FF'
-    },
-    secondary: {
-      main: '#6670FF',
-    },
-    inputBorder: {
-      main: '#979797'
-    }
-  },
-  typography: {
-    fontFamily: '"Raleway", "sans-serif"',
-  }
 });
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <NextUIProvider theme={theme}>
       <div className="App">
         {/* <StartPage /> */}
         <CalendarView />
       </div>
-    </ThemeProvider>
+    </NextUIProvider>
   );
 }
 

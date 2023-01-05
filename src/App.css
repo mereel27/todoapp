@@ -28,7 +28,6 @@
   flex-direction: column;
 }
 
-
 .react-calendar button {
   font-size: inherit;
   font-family: inherit;
@@ -46,13 +45,16 @@
 }
 
 .react-calendar__navigation__label {
-  padding: 8px 5px;
+  padding: 4px;
   color: rgba(var(--main-text-color), 1);
 }
 
 .react-calendar__navigation__arrow {
-  padding: 8px;
+  padding: 4px;
   flex-basis: 14.2857%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .react-calendar__navigation__arrow:hover,
@@ -75,7 +77,12 @@
 
 .react-calendar__navigation__prev-button:active svg,
 .react-calendar__navigation__prev2-button:active svg {
-  transform: rotate(180deg) translateX(4px);
+  transform: translateX(-4px);
+}
+
+.react-calendar__tile abbr {
+  position: inherit;
+  z-index: 1;
 }
 
 .react-calendar__navigation__arrow svg {
@@ -137,6 +144,12 @@
   aspect-ratio: 4 / 2.5;
 }
 
+.date-picker__calendar .react-calendar__month-view,
+.date-picker__calendar .react-calendar__year-view,
+.date-picker__calendar .react-calendar__decade-view {
+  aspect-ratio: 4 / 3;
+}
+
 .react-calendar__year-view__months,
 .react-calendar__decade-view__years {
   height: 100%;
@@ -183,8 +196,7 @@
   text-decoration: none !important;
 }
 
-.react-calendar__tile.current-day,
-.react-calendar__tile--now.react-calendar__month-view__days__day {
+.react-calendar__tile.current-day {
   color: white;
 }
 
@@ -203,7 +215,6 @@
   max-height: calc(100% - 10px);
   height: unset;
   aspect-ratio: 1 / 1;
-  z-index: -1;
   top: 0;
   bottom: 10px;
   left: 0;
@@ -211,7 +222,7 @@
   margin: auto;
   border-radius: 50%;
   box-sizing: border-box;
-  transition: background-color 200ms ease-in;
+  /* transition: background-color 200ms ease-in; */
 }
 
 .react-calendar__tile--now:not(
@@ -219,7 +230,8 @@
     .react-calendar__decade-view__years__year,
     .current-day
   )::after {
-  background-color: rgb(var(--accent-color));
+  /* background-color: var(--accent-color); */
+  border: 2px solid var(--accent-color);
 }
 
 .react-calendar__tile:not(
@@ -424,21 +436,13 @@
   pointer-events: none;
 }
 
-.date-picker {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 16px;
-  max-height: calc(100% - 10px);
-  max-width: calc(500px - var(--box-padding) - 20px);
-  width: calc(100% - var(--box-padding) - 20px);
-  overflow-y: auto;
-  background-color: white;
-  border-radius: 3px;
-  z-index: 1300;
-  padding: 15px 0 0 0;
-  box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.185434);
+.date-picker__calendar
+  :is(
+    .react-calendar__navigation,
+    .react-calendar__month-view__weekdays,
+    .react-calendar__month-view__days
+  ) {
+    padding: 0;
 }
 
 .date-picker__calendar
@@ -461,10 +465,6 @@
   ) {
   padding: 5px 0;
   z-index: 2;
-}
-
-.date-picker__calendar .react-calendar__viewContainer {
-  margin-bottom: 20px;
 }
 
 .modal-container__button {
@@ -592,11 +592,11 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: rgba(var(--main-text-color), .65);
+  color: rgba(var(--main-text-color), 0.65);
 }
 
 .checkbox-icon--checked {
-  color: rgba(var(--accent-color), 1)
+  color: rgba(var(--accent-color), 1);
 }
 
 .green-dot::after {
@@ -640,7 +640,10 @@
 @media screen and (max-width: 450px) {
   .react-calendar__month-view,
   .react-calendar__year-view,
-  .react-calendar__decade-view {
+  .react-calendar__decade-view,
+  .date-picker__calendar .react-calendar__month-view,
+  .date-picker__calendar .react-calendar__year-view,
+  .date-picker__calendar .react-calendar__decade-view {
     aspect-ratio: 1 / 1;
   }
 
@@ -649,20 +652,6 @@
   .select-options__container {
     width: 100%;
   }
-
-  /* .date-picker__calendar
-    .react-calendar__tile--now:not(
-      .react-calendar__year-view__months__month,
-      .react-calendar__decade-view__years__year
-    )::after,
-  .date-picker__calendar
-    .react-calendar__tile:not(
-      .react-calendar__year-view__months__month,
-      .react-calendar__decade-view__years__year
-    )::after {
-    height: unset;
-  } */
-
   .react-calendar__year-view__months {
     font-size: 12px;
   }
@@ -676,9 +665,12 @@
   }
 }
 
-
-.my-class-name {
-  background-color: black;
-  z-index: 9999999999;
-  position: absolute;
+@media screen and (max-width: 300px) {
+  .date-picker__calendar .react-calendar__month-view,
+  .date-picker__calendar .react-calendar__year-view,
+  .date-picker__calendar .react-calendar__decade-view {
+    aspect-ratio: 1 / 1.5;
+  }
 }
+
+

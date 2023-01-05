@@ -1,98 +1,142 @@
-import { useEffect, useState, createContext, useMemo } from 'react';
+import {
+  useEffect,
+  useState,
+  createContext,
+  useMemo,
+  useCallback,
+} from 'react';
 import Calendar from 'react-calendar';
-import { Box, Container, Typography } from '@mui/material';
+import { Container, Grid } from '@nextui-org/react';
 import Logo from './Logo';
-import ViewButton from './ViewButton';
-import Event from './Event';
+import DailyView from './DailyView';
+import EventsList from './EventsList';
 import BottomToolbar from './BottomToolbar';
-import { getShortDate } from './utils';
+import ViewSwitcher from './ViewSwitcher';
+import EventMark from './EventMark';
+import {
+  getDateObject,
+  getDateWithCurrentTime,
+  getCurrentEvents,
+  dateToString,
+} from './utils';
+import DoubleArrowRight from './DoubleArrowRight';
+import DoubleArrowLeft from './DoubleArrowLeft';
+import { ArrowLeft2, ArrowRight2 } from 'iconsax-react';
+import { styled } from '@nextui-org/react';
 
-import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
-import KeyboardDoubleArrowRightRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowRightRounded';
-
-const formatDate = (value) =>
-  value.toLocaleString('en', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
-
-const getCurrentEvents = (events, date, oneDay) => {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const day = date.getDate();
-  const isMonthEvents = events[year] && events[year][month];
-  const isDayEvents = isMonthEvents && events[year][month][day];
-  if (oneDay) {
-    if (isDayEvents) return events[year][month][day];
-    return undefined;
-  }
-  if (isMonthEvents) {
-    return Object.values(events[year][month]).flat();
-  }
-};
+const MarkContainer = styled('div', {
+  width: '100%',
+  position: 'absolute',
+  display: 'flex',
+  bottom: '1px',
+  justifyContent: 'center',
+  overflow: 'hidden',
+});
 
 export const Context = createContext();
 
 export default function CalendarView() {
-  const [today, setToday] = useState(new Date());
+  const [today] = useState(new Date());
   const [view, setView] = useState('month');
   const [todoView, setTodoView] = useState('month');
   const [currentMonth, setCurrentMonth] = useState(
     new Date(today.getFullYear(), today.getMonth())
   );
   const [currentDay, setCurrentDay] = useState(null);
-  const [events, setEvents] = useState({
-    2023: {
-      0: {
-        1: [
-          {
-            name: 'meetings',
-            date: new Date('2023/01/01 14:00'),
-            isDone: false,
-          },
-        ],
-      },
-    },
-    2022: {
-      11: {
-        1: [
-          {
-            name: 'meetings2',
-            date: new Date('2022/12/01 20:00'),
-            isDone: false,
-          },
-          {
-            name: 'meetings3',
-            date: new Date('2022/12/01 18:00'),
-            isDone: false,
-          },
-          {
-            name: 'meetings4',
-            date: new Date('2022/12/01 17:45'),
-            isDone: false,
-          },
-        ],
-      },
-    },
-  });
+  const [events, setEvents] = useState(
+    JSON.parse(localStorage.getItem('events')) || {}
+  );
+  const [arrEvents, setArrEvents] = useState([]);
   const [currentEvents, setCurrentEvents] = useState(
     getCurrentEvents(events, currentMonth)
   );
 
-  const contextValue = useMemo(() => currentDay || currentMonth, [currentDay, currentMonth]);
+  /* const [pendingNotifications, setPendingNotifications] = useState([]); */
+
+  const dateTime = useMemo(() => {
+    if (currentDay && currentDay.getMonth() === currentMonth.getMonth()) {
+      return getDateWithCurrentTime(currentDay);
+    } else if (currentMonth.getMonth() !== today.getMonth()) {
+      return getDateWithCurrentTime(currentMonth);
+    } else {
+      return today;
+    }
+  }, [currentDay, currentMonth, today]);
+
+  const addNewEvent = useCallback((event) => {
+    const { year, month, date: day } = getDateObject(event.date);
+    console.log(year, month, day);
+    console.log(event);
+    setArrEvents(prev => [...prev, event]);
+    setEvents((events) => ({
+      ...events,
+      [year]: {
+        ...(events[year] || []),
+        [month]: {
+          ...(events[year] ? events[year][month] : []),
+          [day]: [
+            ...(events[year] && events[year][month] && events[year][month][day]
+              ? events[year][month][day]
+              : []),
+            event,
+          ],
+        },
+      },
+    }));
+  }, []);
+
+  const deleteEvent = useCallback((event) => {
+    const { year, month, date: day } = getDateObject(event.date);
+    setEvents((prevEvents) => {
+      const newEvents = { ...prevEvents };
+      newEvents[year][month][day] = newEvents[year][month][day].filter(
+        (target) => target.id !== event.id
+      );
+      return newEvents;
+    });
+  }, []);
+
+  const setEventMark = useCallback(
+    ({ date }) => {
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      const day = date.getDate();
+      const selectedDate = events?.[year]?.[month]?.[day];
+      if (selectedDate && selectedDate.length > 0) {
+        return (
+          <MarkContainer>
+            {events[year][month][day].slice(0, 4).map((ev, index) => (
+              <EventMark key={index} color={ev.color} />
+            ))}
+          </MarkContainer>
+        );
+      }
+    },
+    [events]
+  );
+
+  const handleViewClick = (value) => {
+    console.log('click');
+    if (todoView === value) return;
+    setTodoView(value);
+  };
 
   useEffect(() => {
-    setCurrentEvents(getCurrentEvents(events, currentMonth));
-  }, [currentMonth, events]);
+    if (currentDay) {
+      setCurrentEvents(getCurrentEvents(events, currentDay, true));
+    } else {
+      setCurrentEvents(getCurrentEvents(events, currentMonth));
+    }
+  }, [currentDay, currentMonth, events]);
 
   useEffect(() => {
-    currentDay && setCurrentEvents(getCurrentEvents(events, currentDay, true));
-  }, [currentDay, events]);
+    Object.keys(events).length > 0 &&
+      localStorage.setItem('events', JSON.stringify(events));
+  }, [events]);
 
   useEffect(() => {
     if (view === 'month') {
-      const firstDayOfMonth = formatDate(currentMonth);
+      const firstDayOfMonth = dateToString(currentMonth);
       const dayNumber = currentMonth.getDay();
       const firstDayElement = document.querySelector(
         `.react-calendar__tile abbr[aria-label="${firstDayOfMonth}"]`
@@ -102,15 +146,9 @@ export default function CalendarView() {
     }
   }, [currentMonth, view]);
 
-  const handleViewClick = (value) => {
-    if (todoView === value) return;
-    setTodoView(value);
-  };
-
-  const handleEventCheckClick = (date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const day = date.getDate();
+  const handleEventCheckClick = useCallback((id) => {
+    const { year, month, date: day } = getDateObject(id);
+    console.log(year, month ,day)
     setEvents((events) => ({
       ...events,
       [year]: {
@@ -118,7 +156,8 @@ export default function CalendarView() {
         [month]: {
           ...events[year][month],
           [day]: events[year][month][day].map((el) => {
-            if (el.date.getTime() === date.getTime()) {
+            console.log(el)
+            if (el.id === id) {
               el.isDone = !el.isDone;
             }
             return el;
@@ -126,144 +165,90 @@ export default function CalendarView() {
         },
       },
     }));
-  };
+  }, []);
 
   const handleDayClick = (date) => {
+    const month = new Date(date.getFullYear(), date.getMonth());
     if (!currentDay) {
       setCurrentDay(date);
+      setCurrentMonth(month);
     } else if (currentDay.getTime() === date.getTime()) {
       setCurrentDay(null);
     } else {
       setCurrentDay(date);
+      setCurrentMonth(month);
     }
   };
 
   return (
-    <Context.Provider value={contextValue}>
+    <Context.Provider
+      value={{
+        dateTime,
+        events,
+        currentEvents,
+        addNewEvent,
+        deleteEvent,
+        handleEventCheckClick,
+        todoView,
+      }}
+    >
       <Container
-        disableGutters
-        maxWidth="sm"
-        sx={{
+        xs
+        css={{
           display: 'flex',
           flexDirection: 'column',
+          flexWrap: 'nowrap',
           height: '100%',
+          padding: 0,
           position: 'relative',
+          maxWidth: '500px',
         }}
       >
-        <Box sx={{ padding: '28px 0px 18px 0' }}>
-          <Box sx={{ margin: '0 auto 19px auto', width: 'fit-content' }}>
+        <Grid css={{ padding: '28px 0px 18px 0' }}>
+          <Grid css={{ margin: '0 auto 19px auto', width: 'fit-content' }}>
             <Logo width="47" height="15" />
-          </Box>
-          <Box
-            sx={{
-              maxWidth: '285px',
-              height: '50px',
-              border: '1px solid rgba(200, 205, 218, 0.306754)',
-              borderRadius: '100px',
-              margin: '0 auto',
-              position: 'relative',
-              display: 'flex',
-              lineHeight: '1.2',
-            }}
-          >
-            <ViewButton
-              active={todoView === 'month'}
-              handleClick={handleViewClick}
-              view="month"
-            >
-              Monthly
-            </ViewButton>
-            <ViewButton
-              active={todoView === 'day'}
-              handleClick={handleViewClick}
-              view="day"
-            >
-              Daily
-            </ViewButton>
-            <Box
-              sx={{
-                position: 'absolute',
-                width: '155px',
-                height: '100%',
-                bgcolor: 'rgb(var(--accent-color))',
-                borderRadius: 'inherit',
-                zIndex: '-1',
-                right: todoView === 'day' ? 0 : 'calc(100% - 155px)',
-                transition: 'right .2s ease',
-              }}
-            ></Box>
-          </Box>
-        </Box>
-        <Box>
-          <Calendar
-            value={today}
-            locale="en"
-            minDetail="decade"
-            onActiveStartDateChange={({ activeStartDate }) =>
-              setCurrentMonth(activeStartDate)
-            }
-            showNeighboringMonth={true}
-            onViewChange={({ view }) => setView(view)}
-            onClickDay={handleDayClick}
-            tileContent={({ date }) =>
-              date.getDate() === 10 ? <div className="green-dot"></div> : null
-            }
-            tileClassName={({ date }) =>
-              currentDay && formatDate(date) === formatDate(currentDay)
-                ? 'current-day'
-                : null
-            }
-            formatShortWeekday={(locale, date) =>
-              date.toLocaleString(locale, { weekday: 'short' }).slice(0, 2)
-            }
-            nextLabel={<KeyboardArrowRightRoundedIcon />}
-            prevLabel={
-              <KeyboardArrowRightRoundedIcon
-                sx={{ transform: 'rotate(180deg)' }}
+          </Grid>
+          <ViewSwitcher todoView={todoView} handleClick={handleViewClick} />
+        </Grid>
+        {todoView === 'month' ? (
+          <>
+            <Grid css={{ marginBottom: '20px' }}>
+              <Calendar
+                /* value={today} */
+                activeStartDate={currentMonth}
+                locale="en"
+                minDetail="decade"
+                onActiveStartDateChange={({ activeStartDate }) => {
+                  /* setCurrentDay(null); */
+                  setCurrentMonth(activeStartDate);
+                }}
+                showNeighboringMonth={true}
+                onViewChange={({ view }) => setView(view)}
+                onClickDay={handleDayClick}
+                tileContent={setEventMark}
+                tileClassName={({ date }) =>
+                  currentDay && dateToString(date) === dateToString(currentDay)
+                    ? 'current-day'
+                    : null
+                }
+                formatShortWeekday={(locale, date) =>
+                  date.toLocaleString(locale, { weekday: 'short' }).slice(0, 2)
+                }
+                nextLabel={<ArrowRight2 size="1.3rem" />}
+                prevLabel={<ArrowLeft2 size="1.3rem" />}
+                next2Label={<DoubleArrowRight size="1.3rem" />}
+                prev2Label={<DoubleArrowLeft size="1.3rem" />}
               />
-            }
-            next2Label={<KeyboardDoubleArrowRightRoundedIcon />}
-            prev2Label={
-              <KeyboardDoubleArrowRightRoundedIcon
-                sx={{ transform: 'rotate(180deg)' }}
-              />
-            }
-          />
-        </Box>
-        <Box
-          sx={{
-            textAlign: 'left',
-            p: '22px 30px',
-            bgcolor: 'var(--day-view-background)',
-            flexGrow: 1,
-          }}
-        >
-          <Typography
-            variant="p"
-            display="block"
-            fontWeight={700}
-            fontSize="24px"
-            marginBottom="24px"
-          >
-            {currentDay ? getShortDate(currentDay) : 'This month'}
-          </Typography>
-          {currentEvents ? (
-            currentEvents.map((event, index) => {
-              return (
-                <Event
-                  event={event}
-                  key={index + event.date.getMonth() + event.date.getDate()}
-                  handleClick={handleEventCheckClick}
-                />
-              );
-            })
-          ) : (
-            <Typography variant="body1" fontWeight={600} align="center">
-              {(currentDay && 'No events on this day') ||
-                'No events on this month'}
-            </Typography>
-          )}
-        </Box>
+            </Grid>
+            <EventsList
+              handleEventCheckClick={handleEventCheckClick}
+              events={currentEvents}
+              day={currentDay}
+            />
+          </>
+        ) : (
+          <DailyView day={dateTime} handleDayChange={handleDayClick} />
+        )}
         <BottomToolbar />
       </Container>
     </Context.Provider>
