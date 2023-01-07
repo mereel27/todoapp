@@ -41,7 +41,7 @@ export default function Event({
         <>
           <CheckButton
             checked={event.isDone}
-            onPress={() => handleClick(event.id)}
+            onPress={() => handleClick(event)}
           />
           <Text
             span

@@ -2,10 +2,10 @@ import { eventColorsMap } from './utils';
 import { Modal, Text, Card, Grid, styled } from '@nextui-org/react';
 import CheckButton from './CheckButton';
 import ModalButton from './ModalButton';
-import { FiCalendar } from 'react-icons/fi';
+import { Calendar } from 'iconsax-react';
 import { getDateObject, formatDate } from './utils';
 
-const CalendarIcon = styled(FiCalendar, {
+const CalendarIcon = styled(Calendar, {
   marginRight: '10px',
   fontSize: '18px',
 });
@@ -26,7 +26,7 @@ export default function EventDetails({
     <Modal
       open={open}
       onClose={handleClose}
-      css={{ padding: '$10'}}
+      css={{ padding: '$10' }}
       blur
       width="500px"
       closeButton
@@ -68,7 +68,7 @@ export default function EventDetails({
         <Grid css={{ display: 'flex', alignItems: 'center' }}>
           <CheckButton
             checked={event.isDone}
-            onPress={() => handleEventCheckClick(event.date)}
+            onPress={() => handleEventCheckClick(event)}
           />
           <Text span weight="medium" css={{ marginLeft: '10px' }}>
             {event.isDone ? 'Completed' : 'Uncompleted'}

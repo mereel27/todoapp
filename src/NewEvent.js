@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, useCallback } from 'react';
-import { formatDate, getNotificationTime } from './utils';
+import { formatDate, getNotificationTime, getNumericDate } from './utils';
 import { Context } from './CalendarView';
 import DatePicker from './DatePicker';
 import EventInput from './EventInput';
@@ -95,14 +95,14 @@ export default function NewEvent({ handleClose, open }) {
       const formData = {
         name: topic,
         date: eventDate,
+        shortDate: getNumericDate(inputDate[1]),
         isDone: false,
         description,
         color: eventColor,
-        notifications: getSelectedItems.map(option => {
-          console.log(option)
+        notifications: /* getSelectedItems.map(option => {
           return getNotificationTime(eventDate, option)
-        }),
-        id: Date.now()
+        }) */ selected.map(el => notificationOptions[el]),
+        id: Date.now(),
       };
       addNewEvent(formData)
     }

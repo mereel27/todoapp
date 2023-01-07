@@ -36,6 +36,7 @@ const MarkContainer = styled('div', {
 export const Context = createContext();
 
 export default function CalendarView() {
+  /////////////// Events state ////////////////////
   const [today] = useState(new Date());
   const [view, setView] = useState('month');
   const [todoView, setTodoView] = useState('month');
@@ -46,12 +47,10 @@ export default function CalendarView() {
   const [events, setEvents] = useState(
     JSON.parse(localStorage.getItem('events')) || {}
   );
-  const [arrEvents, setArrEvents] = useState([]);
   const [currentEvents, setCurrentEvents] = useState(
     getCurrentEvents(events, currentMonth)
   );
-
-  /* const [pendingNotifications, setPendingNotifications] = useState([]); */
+  const [pendingNotifications, setPendingNotifications] = useState({});
 
   const dateTime = useMemo(() => {
     if (currentDay && currentDay.getMonth() === currentMonth.getMonth()) {
@@ -62,12 +61,80 @@ export default function CalendarView() {
       return today;
     }
   }, [currentDay, currentMonth, today]);
+  //////////////// ------------ ///////////////////////
 
+  /////////////// Events effects ////////////////////
+  useEffect(() => {
+    if (currentDay) {
+      setCurrentEvents(getCurrentEvents(events, currentDay, true));
+    } else {
+      setCurrentEvents(getCurrentEvents(events, currentMonth));
+    }
+  }, [currentDay, currentMonth, events]);
+
+  useEffect(() => {
+    Object.keys(events).length > 0 &&
+      localStorage.setItem('events', JSON.stringify(events));
+  }, [events]);
+
+  useEffect(() => {
+    if (view === 'month') {
+      const firstDayOfMonth = dateToString(currentMonth);
+      const dayNumber = currentMonth.getDay();
+      const firstDayElement = document.querySelector(
+        `.react-calendar__tile abbr[aria-label="${firstDayOfMonth}"]`
+      );
+      firstDayElement.parentElement.style.gridColumn = dayNumber || 7;
+      firstDayElement.parentElement.style.marginLeft = null;
+    }
+  }, [currentMonth, view]);
+
+  useEffect(() => {
+    const keys = Object.keys(events);
+    const currentYear = today.getFullYear();
+    const currMonth = today.getMonth();
+    const currDate = today.getDate();
+    const future = keys.filter(year => year >= currentYear);
+
+    future.forEach(year => {
+      Object.keys(events[year]).forEach(month => {
+        Object.keys(events[year][month]).filter(el => {
+          if (year === currentYear) {
+            if (month < currMonth) return false;
+            }
+          return true;
+        }).forEach(date => {
+          events[year][month][date].filter(el => {
+            if (date < currDate) return false;
+            return true;
+          }).forEach(el => {
+            if (el.notifications.length > 0) {
+              const notifications = { [el.id]: {notifications: el.notifications, id: el.id, date: el.shortDate} };
+              console.log(notifications)
+              setPendingNotifications(prev => {
+                return {...prev, ...notifications};
+              })
+            }
+          })
+        })
+      });
+
+    })
+  }, [events, today])
+
+  useEffect(() => {
+    const pending = Object.keys(pendingNotifications);
+    pending.length > 0 &&
+    pending.forEach((key) => {
+        console.log(key)
+      });
+  }, [pendingNotifications]);
+  /////////////// ------------ ////////////////////////
+
+
+  /////////////// Events handlers ////////////////////
   const addNewEvent = useCallback((event) => {
     const { year, month, date: day } = getDateObject(event.date);
-    console.log(year, month, day);
-    console.log(event);
-    setArrEvents(prev => [...prev, event]);
     setEvents((events) => ({
       ...events,
       [year]: {
@@ -83,6 +150,16 @@ export default function CalendarView() {
         },
       },
     }));
+    /* if (event.notifications.length > 0) {
+      let notifications = {}; 
+      event.notifications.forEach(time => {
+        const newNotification = {[`${event.id}-${time}`]: {year, month, day, id: event.id, time }};
+        notifications = {...notifications, ...newNotification};
+      })
+      setPendingNotifications(prev => {
+        return {...prev, ...notifications};
+      })
+    } */
   }, []);
 
   const deleteEvent = useCallback((event) => {
@@ -121,33 +198,8 @@ export default function CalendarView() {
     setTodoView(value);
   };
 
-  useEffect(() => {
-    if (currentDay) {
-      setCurrentEvents(getCurrentEvents(events, currentDay, true));
-    } else {
-      setCurrentEvents(getCurrentEvents(events, currentMonth));
-    }
-  }, [currentDay, currentMonth, events]);
-
-  useEffect(() => {
-    Object.keys(events).length > 0 &&
-      localStorage.setItem('events', JSON.stringify(events));
-  }, [events]);
-
-  useEffect(() => {
-    if (view === 'month') {
-      const firstDayOfMonth = dateToString(currentMonth);
-      const dayNumber = currentMonth.getDay();
-      const firstDayElement = document.querySelector(
-        `.react-calendar__tile abbr[aria-label="${firstDayOfMonth}"]`
-      );
-      firstDayElement.parentElement.style.gridColumn = dayNumber || 7;
-      firstDayElement.parentElement.style.marginLeft = null;
-    }
-  }, [currentMonth, view]);
-
-  const handleEventCheckClick = useCallback((id) => {
-    const { year, month, date: day } = getDateObject(id);
+  const handleEventCheckClick = useCallback((event) => {
+    const { year, month, date: day } = getDateObject(event.date);
     console.log(year, month ,day)
     setEvents((events) => ({
       ...events,
@@ -157,7 +209,7 @@ export default function CalendarView() {
           ...events[year][month],
           [day]: events[year][month][day].map((el) => {
             console.log(el)
-            if (el.id === id) {
+            if (el.id === event.id) {
               el.isDone = !el.isDone;
             }
             return el;
@@ -179,6 +231,7 @@ export default function CalendarView() {
       setCurrentMonth(month);
     }
   };
+  /////////////// ------------ ////////////////////////
 
   return (
     <Context.Provider

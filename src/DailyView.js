@@ -7,6 +7,7 @@ import DatePicker from './DatePicker';
 
 export default function DailyView({ day, handleDayChange}) {
   const [pickerOpen, setPickerOpen] = useState(false);
+  console.log(day)
 
   const handleSubmit = (date) => {
     console.log(date)

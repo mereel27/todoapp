@@ -10,22 +10,23 @@ export const notificationTimeMap = {
   '5 mins before': 300000,
   '10 mins before': 600000,
   '15 mins before': 900000,
-  '30 mins before': 1.8e+6,
-  '1 hour before': 3.6e+6,
-  '2 hour before': 7.2e+6,
-  '1 day before': 8.64e+7,
-  '2 day before': 1.728e+8,
-  '1 week before': 6.048e+8,
+  '30 mins before': 1.8e6,
+  '1 hour before': 3.6e6,
+  '2 hour before': 7.2e6,
+  '1 day before': 8.64e7,
+  '2 day before': 1.728e8,
+  '1 week before': 6.048e8,
 };
 
 export const getNotificationTime = (eventTime, option) => {
   return eventTime - notificationTimeMap[option];
-}
+};
 
 export const getShortMonth = (value) =>
   value.toLocaleString('en', { month: 'short' });
 
-export const getMonthName = date => date.toLocaleString('en', {month: 'long'})
+export const getMonthName = (date) =>
+  date.toLocaleString('en', { month: 'long' });
 
 export const getShortDate = (value) => {
   const { date, dateObject } = getDateObject(value);
@@ -71,15 +72,15 @@ export const getDateObject = (value) => {
   const year = dateObject.getFullYear();
   const month = dateObject.getMonth();
   const date = dateObject.getDate();
-  return { year, month, date, dateObject };
+  const stringDate = `${date}.${month}.${year}`;
+  return { stringDate, year, month, date, dateObject };
 };
 
 export const getTime = (value) => {
-  const date = value || new Date();
-  const time = date
-    .toLocaleTimeString('en-uk', { hour: '2-digit', minute: '2-digit' })
-    .split(':');
-  return {hours: time[0], minutes: time[1]}
+  const date = value ? new Date(value) : new Date();
+  const time = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  console.log({ hours: time.slice(0, 2), minutes: time.slice(-2), time })
+  return { hours: time.slice(0, 2), minutes: time.slice(-2), time };
 };
 
 export const hoursArray = () => {
@@ -99,9 +100,9 @@ export const minutesArray = () => {
 };
 
 export const getDateWithCurrentTime = (date) => {
-  const newDate = new Date();
-  newDate.setMonth(date.getMonth());
-  newDate.setDate(date.getDate());
+  const currTime = new Date();
+  const newDate = new Date(date);
+  newDate.setHours(currTime.getHours(), currTime.getMinutes(), currTime.getSeconds());
   return newDate;
 };
 
@@ -124,8 +125,15 @@ export const getCurrentEvents = (events, date, oneDay) => {
 };
 
 export const dateToString = (value) =>
-value.toLocaleString('en', {
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric',
-});
+  value.toLocaleString('en', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
+export const getNumericDate = (date) =>
+  new Date(date).toLocaleString('de', {
+    day: '2-digit',
+    month: '2-digit',
+    year: '2-digit',
+  });
