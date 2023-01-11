@@ -38,6 +38,7 @@ export default memo(function DatePicker({
 
   return (
     <Modal
+      css={{borderRadius: '4px'}}
       open={open}
       onClose={handleClose}
       className="modal-container"
@@ -79,9 +80,9 @@ export default memo(function DatePicker({
           Close
         </ModalButton>
         <ModalButton
-          shadow
           disabled={currentDate ? false : true}
           onPress={() => handleOkButton(currentDate)}
+          regular={true}
         >
           Ok
         </ModalButton>

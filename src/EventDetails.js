@@ -1,13 +1,16 @@
 import { eventColorsMap } from './utils';
 import { Modal, Text, Card, Grid, styled } from '@nextui-org/react';
+import DeleteEventDialog from './DeleteEventDialog';
 import CheckButton from './CheckButton';
 import ModalButton from './ModalButton';
 import { Calendar } from 'iconsax-react';
 import { getDateObject, formatDate } from './utils';
+import { useState } from 'react';
 
 const CalendarIcon = styled(Calendar, {
   marginRight: '10px',
   fontSize: '18px',
+  color: '$text',
 });
 
 export default function EventDetails({
@@ -17,7 +20,10 @@ export default function EventDetails({
   handleEventCheckClick,
   handleDeleteEvent,
 }) {
+  const [isDialogOpen, setDialogOpen] = useState(false);
+
   const deleteEvent = () => {
+    setDialogOpen(false);
     handleClose(false);
     setTimeout(() => handleDeleteEvent(event), 200);
   };
@@ -28,7 +34,7 @@ export default function EventDetails({
       onClose={handleClose}
       css={{ padding: '$10' }}
       blur
-      width="500px"
+      /* width="500px" */
       closeButton
     >
       <Modal.Header
@@ -82,15 +88,20 @@ export default function EventDetails({
         }}
         noPadding
       >
-        <ModalButton
-          color="error"
-          onPress={deleteEvent}
-          aria-label="Close modal"
-          flat
-          auto
+        <DeleteEventDialog
+          open={isDialogOpen}
+          setOpen={setDialogOpen}
+          handleDelete={deleteEvent}
         >
-          Delete
-        </ModalButton>
+          <ModalButton
+            color="error"
+            aria-label="Delete event"
+            flat
+            auto
+          >
+            Delete
+          </ModalButton>
+        </DeleteEventDialog>
         <ModalButton
           color="primary"
           onPress={() => handleClose(false)}

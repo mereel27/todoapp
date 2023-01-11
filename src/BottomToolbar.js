@@ -10,7 +10,7 @@ const NavButton = styled(Button, {
     color: {
       nav: {
         backgroundColor: 'transparent',
-        color: 'inherit',
+        color: '$accents7',
         '&:hover': {
           backgroundColor: '$accents1',
         },
@@ -20,6 +20,7 @@ const NavButton = styled(Button, {
 });
 
 const CustomToggle = styled(Navbar.Toggle, {
+  color: '$accents7',
   borderRadius: '50%',
   width: '40px',
   height: '40px',

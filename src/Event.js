@@ -1,8 +1,9 @@
 import { getShortDate, getDateObject } from './utils';
-import { Text, Collapse, Button, Grid, } from '@nextui-org/react';
-import { FiTrash2 } from 'react-icons/fi';
+import { Text, Collapse, Button, Grid } from '@nextui-org/react';
+import { Trash } from 'iconsax-react';
 import CheckButton from './CheckButton';
-import { useContext } from 'react';
+import DeleteEventDialog from './DeleteEventDialog';
+import { useContext, useState } from 'react';
 import { Context } from './CalendarView';
 
 export default function Event({
@@ -13,11 +14,19 @@ export default function Event({
   deleted,
 }) {
   const { dateObject } = getDateObject(event.date);
+  const [isDialogOpen, setDialogOpen] = useState(false);
   const { todoView } = useContext(Context);
+
+  const handleDelete = () => {
+    setDialogOpen(false);
+    handleDeleteEvent(event);
+  };
+
   return (
     <Collapse
       shadow
       css={{
+        borderRadius: '3px',
         opacity: deleted ? '0' : '',
         transform: deleted ? 'translateX(50%)' : '',
         transition: 'opacity .25s, transform .25s',
@@ -55,17 +64,40 @@ export default function Event({
             {event.name}
           </Text>
           <Text span weight="medium" size="$sm" css={{ marginLeft: 'auto' }}>
-            <Text span css={{display: 'none', '@media (max-width: 350px)': { display: 'inline' }}}>
-              {dateObject.toLocaleDateString('en-uk', {day: '2-digit', month: '2-digit'})}
-            </Text>
-            <Text span css={{'@media (max-width: 350px)': { display: 'none' }}}>
-              {getShortDate(event.date)}
-            </Text>
-            {/* <Text span css={{ marginLeft: '10px', '@media (max-width: 350px)': { display: 'none' } }}>
-              {dateObject.toLocaleString('en', {
-                hour: '2-digit',
-              })}
-            </Text> */}
+            {todoView === 'month' ? (
+              <>
+                <Text
+                  span
+                  css={{
+                    display: 'none',
+                    '@media (max-width: 350px)': { display: 'inline' },
+                  }}
+                >
+                  {dateObject.toLocaleDateString('en-uk', {
+                    day: '2-digit',
+                    month: '2-digit',
+                  })}
+                </Text>
+                <Text
+                  span
+                  css={{ '@media (max-width: 350px)': { display: 'none' } }}
+                >
+                  {getShortDate(event.date)}
+                </Text>
+              </>
+            ) : (
+              <Text
+                span
+                css={{
+                  marginLeft: '10px',
+                  '@media (max-width: 350px)': { display: 'none' },
+                }}
+              >
+                {dateObject.toLocaleString('en', {
+                  hour: '2-digit',
+                })}
+              </Text>
+            )}
           </Text>
         </>
       }
@@ -80,23 +112,42 @@ export default function Event({
         }}
       >
         <Button
-          flat
+          light
           color="secondary"
           auto
           onPress={() => handleDetailsClick(event)}
           aria-label="View details"
+          css={{
+            borderRadius: '3px',
+            '&:hover': {
+              backgroundColor: '$purple100',
+            },
+          }}
         >
           View details
         </Button>
-        <Button
-          aria-label="Delete event"
-          auto={true}
-          flat
-          color="error"
-          css={{ marginLeft: 'auto', fontSize: '20px', padding: '$0 $sm' }}
-          icon={<FiTrash2 />}
-          onPress={() => handleDeleteEvent(event)}
-        ></Button>
+        <DeleteEventDialog
+          open={isDialogOpen}
+          setOpen={setDialogOpen}
+          handleDelete={handleDelete}
+        >
+          <Button
+            aria-label="Delete event"
+            auto={true}
+            light
+            color="error"
+            css={{
+              marginLeft: 'auto',
+              fontSize: '20px',
+              padding: '$0 $sm',
+              borderRadius: '3px',
+              '&:hover': {
+                backgroundColor: '$red100',
+              },
+            }}
+            icon={<Trash />}
+          ></Button>
+        </DeleteEventDialog>
       </Grid>
     </Collapse>
   );

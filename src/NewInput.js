@@ -1,17 +1,17 @@
 import { Input } from '@nextui-org/react';
 
-export default function EventInput(props) {
+export default function NewInput(props) {
   return (
     <Input
+      size='lg'
       fullWidth
-      size="lg"
-      shadow={false}
+      underlined
+      color='primary'
       css={{
         marginBottom: '30px',
-        '& > label': {
+        '& label': {
+          color: props.status === 'error' ? '$error' : '$text',
           fontWeight: '$semibold',
-          color: '$text',
-          padding: 0,
         },
         '& input': { 
           '&::placeholder': {
@@ -21,14 +21,10 @@ export default function EventInput(props) {
           cursor: props.name === 'date' || props.name === 'notification' ? 'pointer' : '',
           color: props.name === 'notification' ? 'transparent' : '',
         },
-        '.nextui-input-wrapper': {
-          borderRadius: '3px',
-          width: '100%',
-          overflowX: 'hidden',
-          '&:focus-within': {
-            outline: '2px solid $blue300',
-            transition: 'outline 0s',
-          },
+        '&[data-state="with-value"], &[data-state="hover"]': {
+          '& label': {
+            top: '-20px'
+          }
         },
         '.nextui-input-content': props.name === 'notification' ? {
           padding: '10px 0',
@@ -41,6 +37,8 @@ export default function EventInput(props) {
           top: 0,
           bottom: 0,
           margin: 'auto',
+          marginRight: '$3',
+          marginLeft: '$3',
           height: 'unset',
           '&:after': {
             content: '',
@@ -48,7 +46,7 @@ export default function EventInput(props) {
             right: 0,
             width: '20px',
             height: '100%',
-            background: 'linear-gradient(to right, transparent, var(--nextui--inputColor))'
+            background: 'linear-gradient(to right, transparent, white)'
           }
         } : {
           padding: '0 10px 0 20px',
@@ -64,7 +62,12 @@ export default function EventInput(props) {
         },
         '.nextui-input-helper-text': {
           fontWeight: '$semibold'
-        }
+        },
+        '.nextui-input-wrapper': {
+          borderRadius: '0',
+          width: '100%',
+          overflowX: 'hidden',
+        },
       }}
       {...props}
     />

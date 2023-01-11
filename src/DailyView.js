@@ -5,12 +5,11 @@ import { dateToString } from './utils';
 import EventsList from './EventsList';
 import DatePicker from './DatePicker';
 
-export default function DailyView({ day, handleDayChange}) {
+export default function DailyView({ day, handleDayChange }) {
   const [pickerOpen, setPickerOpen] = useState(false);
-  console.log(day)
 
   const handleSubmit = (date) => {
-    console.log(date)
+    console.log(date);
     handleDayChange(date);
     setPickerOpen(false);
   };
@@ -27,14 +26,29 @@ export default function DailyView({ day, handleDayChange}) {
           alignItems: 'center',
           flexGrow: 0,
           width: '100%',
-          padding: '0 $xl'
+          padding: '0 $md',
         }}
       >
         <Text span weight="bold" size="$xl">
           {dateToString(day)}
         </Text>
-        <Button auto flat icon={<Calendar />} onPress={() => setPickerOpen(true)}></Button>
-        <DatePicker date={day} open={pickerOpen} handleClose={handleClose} handleSubmit={handleSubmit}/>
+        <Button
+          css={{
+            borderRadius: '3px',
+            color: '$primary',
+            '&:hover': { backgroundColor: '$blue100' },
+          }}
+          auto
+          light
+          icon={<Calendar />}
+          onPress={() => setPickerOpen(true)}
+        ></Button>
+        <DatePicker
+          date={day}
+          open={pickerOpen}
+          handleClose={handleClose}
+          handleSubmit={handleSubmit}
+        />
       </Grid>
       <EventsList day={day} />
     </Grid.Container>

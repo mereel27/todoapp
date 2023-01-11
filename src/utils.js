@@ -31,9 +31,6 @@ export const getMonthName = (date) =>
 export const getShortDate = (value) => {
   const { date, dateObject } = getDateObject(value);
   let ending;
-  if (date > 3 && date < 21) {
-    ending = 'th';
-  }
   switch (date % 10) {
     case 1:
       ending = 'st';
@@ -46,6 +43,9 @@ export const getShortDate = (value) => {
       break;
     default:
       ending = 'th';
+  }
+  if (date > 3 && date < 21) {
+    ending = 'th';
   }
   const dateString = getShortMonth(dateObject);
   if (date === new Date().getDate()) {
@@ -79,7 +79,6 @@ export const getDateObject = (value) => {
 export const getTime = (value) => {
   const date = value ? new Date(value) : new Date();
   const time = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-  console.log({ hours: time.slice(0, 2), minutes: time.slice(-2), time })
   return { hours: time.slice(0, 2), minutes: time.slice(-2), time };
 };
 

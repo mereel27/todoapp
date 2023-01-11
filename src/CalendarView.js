@@ -14,10 +14,9 @@ import BottomToolbar from './BottomToolbar';
 import ViewSwitcher from './ViewSwitcher';
 import EventMark from './EventMark';
 import {
-  getDateObject,
   getDateWithCurrentTime,
-  getCurrentEvents,
   dateToString,
+  getNumericDate,
 } from './utils';
 import DoubleArrowRight from './DoubleArrowRight';
 import DoubleArrowLeft from './DoubleArrowLeft';
@@ -47,9 +46,8 @@ export default function CalendarView() {
   const [events, setEvents] = useState(
     JSON.parse(localStorage.getItem('events')) || {}
   );
-  const [currentEvents, setCurrentEvents] = useState(
-    getCurrentEvents(events, currentMonth)
-  );
+
+  const [currentEvents, setCurrentEvents] = useState([]);
   const [pendingNotifications, setPendingNotifications] = useState({});
 
   const dateTime = useMemo(() => {
@@ -64,19 +62,38 @@ export default function CalendarView() {
   //////////////// ------------ ///////////////////////
 
   /////////////// Events effects ////////////////////
+
+  // Change current events on date change
   useEffect(() => {
     if (currentDay) {
-      setCurrentEvents(getCurrentEvents(events, currentDay, true));
+      const date = getNumericDate(currentDay);
+      setCurrentEvents(events[date] || []);
     } else {
-      setCurrentEvents(getCurrentEvents(events, currentMonth));
+      const date = getNumericDate(currentMonth);
+      const todayDate = getNumericDate(today);
+      if (todoView === 'day') {
+        if (currentMonth.getMonth() === today.getMonth() 
+            && currentMonth.getFullYear() === today.getFullYear()) {
+              setCurrentEvents(events[todayDate] || []);
+            } else {
+              setCurrentEvents(events[date] || []);
+            }
+      } else {
+        const keys = Object.keys(events).filter(
+          (key) => key.slice(-5) === date.slice(-5)
+        );
+        const monthEvents = keys.flatMap((key) => events[key]);
+        setCurrentEvents(monthEvents);
+      }
     }
-  }, [currentDay, currentMonth, events]);
+  }, [currentDay, currentMonth, events, todoView, today]);
 
+  // Save event to local storage
   useEffect(() => {
-    Object.keys(events).length > 0 &&
-      localStorage.setItem('events', JSON.stringify(events));
+    localStorage.setItem('events', JSON.stringify(events));
   }, [events]);
 
+  // First day of month position
   useEffect(() => {
     if (view === 'month') {
       const firstDayOfMonth = dateToString(currentMonth);
@@ -90,99 +107,48 @@ export default function CalendarView() {
   }, [currentMonth, view]);
 
   useEffect(() => {
-    const keys = Object.keys(events);
-    const currentYear = today.getFullYear();
-    const currMonth = today.getMonth();
-    const currDate = today.getDate();
-    const future = keys.filter(year => year >= currentYear);
-
-    future.forEach(year => {
-      Object.keys(events[year]).forEach(month => {
-        Object.keys(events[year][month]).filter(el => {
-          if (year === currentYear) {
-            if (month < currMonth) return false;
-            }
-          return true;
-        }).forEach(date => {
-          events[year][month][date].filter(el => {
-            if (date < currDate) return false;
-            return true;
-          }).forEach(el => {
-            if (el.notifications.length > 0) {
-              const notifications = { [el.id]: {notifications: el.notifications, id: el.id, date: el.shortDate} };
-              console.log(notifications)
-              setPendingNotifications(prev => {
-                return {...prev, ...notifications};
-              })
-            }
-          })
-        })
-      });
-
-    })
-  }, [events, today])
-
-  useEffect(() => {
     const pending = Object.keys(pendingNotifications);
     pending.length > 0 &&
-    pending.forEach((key) => {
-        console.log(key)
+      pending.forEach((key) => {
+        console.log(key);
       });
   }, [pendingNotifications]);
   /////////////// ------------ ////////////////////////
 
-
   /////////////// Events handlers ////////////////////
-  const addNewEvent = useCallback((event) => {
-    const { year, month, date: day } = getDateObject(event.date);
-    setEvents((events) => ({
-      ...events,
-      [year]: {
-        ...(events[year] || []),
-        [month]: {
-          ...(events[year] ? events[year][month] : []),
-          [day]: [
-            ...(events[year] && events[year][month] && events[year][month][day]
-              ? events[year][month][day]
-              : []),
-            event,
-          ],
-        },
-      },
-    }));
-    /* if (event.notifications.length > 0) {
-      let notifications = {}; 
-      event.notifications.forEach(time => {
-        const newNotification = {[`${event.id}-${time}`]: {year, month, day, id: event.id, time }};
-        notifications = {...notifications, ...newNotification};
-      })
-      setPendingNotifications(prev => {
-        return {...prev, ...notifications};
-      })
-    } */
-  }, []);
 
-  const deleteEvent = useCallback((event) => {
-    const { year, month, date: day } = getDateObject(event.date);
-    setEvents((prevEvents) => {
-      const newEvents = { ...prevEvents };
-      newEvents[year][month][day] = newEvents[year][month][day].filter(
-        (target) => target.id !== event.id
-      );
-      return newEvents;
+  const addNewEvent = useCallback((event) => {
+    setEvents((prev) => {
+      return {
+        ...prev,
+        [event.shortDate]: [...(prev[event.shortDate] || []), event],
+      };
     });
   }, []);
 
-  const setEventMark = useCallback(
+  const deleteEvent = useCallback((event) => {
+    setEvents((prev) => {
+      if (prev[event.shortDate].length < 2) {
+        const newState = {...prev};
+        delete newState[event.shortDate];
+        return newState;
+      }
+       return {
+        ...prev,
+        [event.shortDate]: prev[event.shortDate].filter(
+          (current) => current.id !== event.id
+        ),
+      };
+    });
+  }, []);
+
+  const setMark = useCallback(
     ({ date }) => {
-      const year = date.getFullYear();
-      const month = date.getMonth();
-      const day = date.getDate();
-      const selectedDate = events?.[year]?.[month]?.[day];
-      if (selectedDate && selectedDate.length > 0) {
+      const selectedDay = getNumericDate(date);
+      if (events[selectedDay] && events[selectedDay].length > 0) {
         return (
           <MarkContainer>
-            {events[year][month][day].slice(0, 4).map((ev, index) => (
+            {events[selectedDay].slice(0, 4).map((ev, index) => (
               <EventMark key={index} color={ev.color} />
             ))}
           </MarkContainer>
@@ -193,30 +159,22 @@ export default function CalendarView() {
   );
 
   const handleViewClick = (value) => {
-    console.log('click');
     if (todoView === value) return;
     setTodoView(value);
   };
 
   const handleEventCheckClick = useCallback((event) => {
-    const { year, month, date: day } = getDateObject(event.date);
-    console.log(year, month ,day)
-    setEvents((events) => ({
-      ...events,
-      [year]: {
-        ...events[year],
-        [month]: {
-          ...events[year][month],
-          [day]: events[year][month][day].map((el) => {
-            console.log(el)
-            if (el.id === event.id) {
-              el.isDone = !el.isDone;
-            }
-            return el;
-          }),
-        },
-      },
-    }));
+    setEvents((prev) => {
+      return {
+        ...prev,
+        [event.shortDate]: prev[event.shortDate].map((current) => {
+          if (current.id === event.id) {
+            current.isDone = !current.isDone;
+          }
+          return current;
+        }),
+      };
+    });
   }, []);
 
   const handleDayClick = (date) => {
@@ -278,7 +236,7 @@ export default function CalendarView() {
                 showNeighboringMonth={true}
                 onViewChange={({ view }) => setView(view)}
                 onClickDay={handleDayClick}
-                tileContent={setEventMark}
+                tileContent={setMark}
                 tileClassName={({ date }) =>
                   currentDay && dateToString(date) === dateToString(currentDay)
                     ? 'current-day'

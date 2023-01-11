@@ -8,9 +8,59 @@ import NotificationCheckboxGroup from './NotificationCheckboxGroup';
 import ColorButtons from './ColorButtons';
 import ModalButton from './ModalButton';
 import EventDescriptionInput from './EventDescriptionInput';
-import { Modal, Text } from '@nextui-org/react';
+import { Modal, Text, Checkbox, styled } from '@nextui-org/react';
+import NewInput from './NewInput';
 
 const colors = ['violet', 'green', 'orange', 'red'];
+
+const Form = styled('form', {});
+
+const Succes = styled(Checkbox, {
+  pointerEvents: 'none',
+  width: '100px',
+  height: '100px',
+  '.nextui-checkbox-container': {
+    backgroundColor: '$success',
+    width: '100px',
+    height: '100px',
+    borderRadius: '50%',
+  },
+  '.nextui-icon-check': {
+    width: '32px',
+    height: '52px',
+    position: 'absolute',
+    top: '50%',
+    left: '26%',
+    transform: 'rotate(45deg) translate(-50%, -50%)',
+  },
+  '.nextui-icon-check-line1': {
+    width: '32px',
+    height: '8px',
+    '&:after': {
+      height: '8px',
+    },
+  },
+  '.nextui-icon-check-line2': {
+    height: '52px',
+    width: '8px',
+    '&:after': {
+      width: '8px',
+    },
+  },
+});
+
+const SuccessContainer = styled('div', {
+  width: 'fit-content',
+  height: 'fit-content',
+  left: 0,
+  top: 0,
+  right: 0,
+  bottom: 0,
+  margin: 'auto !important',
+  transition: 'transform .3s ease-out, opacity .3s ease-out',
+  position: 'absolute',
+  zIndex: 99999999,
+});
 
 const notificationOptions = [
   'At the start of the event',
@@ -52,6 +102,8 @@ export default function NewEvent({ handleClose, open }) {
   const [eventColor, setEventColor] = useState(colors[0]);
   const [selected, setSelected] = useState([]);
   const [checkboxOpen, setCheckboxOpen] = useState(false);
+  const [successCheck, setSuccessCheck] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
 
   useEffect(() => {
     setInputDate([formatDate(dateTime), dateTime]);
@@ -70,7 +122,7 @@ export default function NewEvent({ handleClose, open }) {
   }, []);
 
   const handleDatePickerSubmit = useCallback((date) => {
-    console.log(date)
+    console.log(date);
     setInputDate([formatDate(date), date]);
     setPickerOpen(false);
   }, []);
@@ -99,13 +151,27 @@ export default function NewEvent({ handleClose, open }) {
         isDone: false,
         description,
         color: eventColor,
-        notifications: /* getSelectedItems.map(option => {
-          return getNotificationTime(eventDate, option)
-        }) */ selected.map(el => notificationOptions[el]),
+        notifications: selected.map((el) => notificationOptions[el]),
         id: Date.now(),
       };
-      addNewEvent(formData)
+      addNewEvent(formData);
+      handleClearForm();
+      successIconAnimation();
     }
+  };
+
+  const handleClearForm = () => {
+    setSelected([]);
+    setTopic('');
+    setDescription('');
+    setEventColor(colors[0]);
+  };
+
+  const successIconAnimation = () => {
+    setSuccessOpen(true);
+    setTimeout(() => setSuccessCheck(true), 200);
+    setTimeout(() => setSuccessOpen(false), 2000);
+    setSuccessCheck(false);
   };
 
   return (
@@ -113,18 +179,31 @@ export default function NewEvent({ handleClose, open }) {
       <Modal
         open={open}
         onClose={handleClose}
-        css={{ fontSize: '16px' }}
+        css={{ fontSize: '16px', borderRadius: '3px' }}
         width="500px"
         closeButton
         blur
       >
-        <Modal.Header css={{ padding: '20px 30px' }}>
+        <Modal.Header css={{ padding: '$sm $10 0' }}>
           <Text h3>Create New Task</Text>
         </Modal.Header>
-        <Modal.Body>
-          <form name="new-event" id="new-event" onSubmit={handleAddButton}>
+        <Modal.Body css={{ padding: '$12 $10 $sm' }}>
+          <SuccessContainer
+            css={{ scale: successOpen ? 1 : 0, opacity: successOpen ? 1 : 0 }}
+            aria-hidden={!successOpen}
+          >
+            <Succes
+              color="successIcon"
+              isSelected={successCheck}
+              isIndeterminate
+              isReadOnly
+              excludeFromTabOrder
+              aria-label="success icon"
+            />
+          </SuccessContainer>
+          <Form name="new-event" id="new-event" onSubmit={handleAddButton}>
             <div>
-              <EventInput
+              <NewInput
                 name="topic"
                 label="Topic"
                 placeholder="Write topic"
@@ -150,7 +229,7 @@ export default function NewEvent({ handleClose, open }) {
                 value={description}
                 onChange={handleDescriptionChange}
               />
-              <EventInput
+              <NewInput
                 name="date"
                 label="Date"
                 placeholder="Choose date"
@@ -161,9 +240,9 @@ export default function NewEvent({ handleClose, open }) {
                 aria-haspopup="true"
                 role="button"
               />
-              <EventInput
+              <NewInput
                 name="notification"
-                label="Notification"
+                label="Notifications"
                 value={getSelectedItems.join(', ')}
                 contentLeft={<ItemList items={getSelectedItems} />}
                 onClick={handleNotificationClick}
@@ -184,7 +263,7 @@ export default function NewEvent({ handleClose, open }) {
                 handleClick={setEventColor}
               />
             </div>
-          </form>
+          </Form>
         </Modal.Body>
         <Modal.Footer css={{ flexWrap: 'nowrap', padding: '$lg' }}>
           <ModalButton
@@ -195,7 +274,7 @@ export default function NewEvent({ handleClose, open }) {
           >
             Close
           </ModalButton>
-          <ModalButton shadow type="submit" onPress={handleAddButton}>
+          <ModalButton type="submit" onPress={handleAddButton} regular={true}>
             Add
           </ModalButton>
         </Modal.Footer>

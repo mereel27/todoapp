@@ -9,8 +9,13 @@ export default function EventsList({ day }) {
   const [event, setEvent] = useState(null);
   const [deletedEvent, setDeletedEvent] = useState(null);
   const [open, setOpen] = useState(undefined);
-  const { dateTime, currentEvents, deleteEvent, handleEventCheckClick } =
-    useContext(Context);
+  const {
+    dateTime,
+    currentEvents,
+    deleteEvent,
+    handleEventCheckClick,
+    todoView,
+  } = useContext(Context);
 
   const handleDetailsClick = (event) => {
     setEvent(event);
@@ -45,7 +50,10 @@ export default function EventsList({ day }) {
         weight="semibold"
         css={{ marginBottom: '22px', display: 'block' }}
       >
-        {day ? `${getShortDate(day)}, ${day.getFullYear()}` : `${getMonthName(dateTime)}, ${dateTime.getFullYear()}`}
+        {todoView === 'month' &&
+          (day
+            ? `${getShortDate(day)}, ${day.getFullYear()}`
+            : `${getMonthName(dateTime)}, ${dateTime.getFullYear()}`)}
       </Text>
       {currentEvents && currentEvents.length > 0 ? (
         currentEvents.map((event) => {

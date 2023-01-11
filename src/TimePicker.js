@@ -18,7 +18,7 @@ const RightFlexbox = styled(Grid, {
     backgroundColor: '$primary',
     backgroundClip: 'content-box',
     height: '35px',
-    borderRadius: '$xs',
+    borderRadius: '3px',
     border: '2px solid transparent',
   },
 });
@@ -119,6 +119,10 @@ export default function TimePicker({hours, minutes, handleHoursChange, handleMin
                 margin: '$1 !important',
                 userSelect: 'none',
               },
+              '.nextui-input-wrapper': {
+                borderRadius: '4px',
+                height: '45px',
+              },
             }}
           />
         </Popover.Trigger>
@@ -126,6 +130,7 @@ export default function TimePicker({hours, minutes, handleHoursChange, handleMin
           css={{
             overflowY: 'hidden',
             border: '2px solid $accents0',
+            borderRadius: '3px',
           }}
         >
           <Grid.Container gap={2}>

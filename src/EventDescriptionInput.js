@@ -3,6 +3,9 @@ import { Textarea } from '@nextui-org/react';
 export default function EventDescriptionInput(props) {
   return (
     <Textarea
+      shadow={false}
+      underlined
+      color='primary'
       css={{
         marginBottom: '30px',
         '.nextui-input-block-label': {
@@ -15,12 +18,17 @@ export default function EventDescriptionInput(props) {
             color: '$inputPlaceholder !important',
           },
           padding: '8px 0',
-          margin: '$2 $5 !important',
+          margin: '$2 $3 !important',
           height: '100% !important',
         },
         '.nextui-input-wrapper': {
+          borderRadius: 0,
           width: '100%',
           overflowX: 'hidden',
+          /* '&:focus-within': {
+            outline: '2px solid $blue300',
+            transition: 'outline 0s',
+          }, */
         },
         '.nextui-input-container': {
           height: 'unset',
