@@ -22,7 +22,7 @@ export default function EventInput(props) {
           color: props.name === 'notification' ? 'transparent' : '',
         },
         '.nextui-input-wrapper': {
-          borderRadius: '3px',
+          borderRadius: '$md',
           width: '100%',
           overflowX: 'hidden',
           '&:focus-within': {

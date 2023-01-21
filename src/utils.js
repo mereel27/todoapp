@@ -78,7 +78,10 @@ export const getDateObject = (value) => {
 
 export const getTime = (value) => {
   const date = value ? new Date(value) : new Date();
-  const time = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  const time = date.toLocaleTimeString('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
   return { hours: time.slice(0, 2), minutes: time.slice(-2), time };
 };
 
@@ -101,7 +104,11 @@ export const minutesArray = () => {
 export const getDateWithCurrentTime = (date) => {
   const currTime = new Date();
   const newDate = new Date(date);
-  newDate.setHours(currTime.getHours(), currTime.getMinutes(), currTime.getSeconds());
+  newDate.setHours(
+    currTime.getHours(),
+    currTime.getMinutes(),
+    currTime.getSeconds()
+  );
   return newDate;
 };
 
@@ -136,3 +143,45 @@ export const getNumericDate = (date) =>
     month: '2-digit',
     year: '2-digit',
   });
+
+export const sortEvents = (events, sortBy) => {
+  const copy = [...events];
+  switch (sortBy) {
+    case 'nearest':
+      return copy.sort((current, prev) => current.date - prev.date);
+    case 'further':
+      return copy.sort((current, prev) => prev.date - current.date);
+    case 'completed':
+      return copy.sort((current, prev) => prev.isDone - current.isDone);
+    case 'uncompleted':
+      return copy.sort((current, prev) => current.isDone - prev.isDone);
+    case 'nameA':
+      return copy.sort((current, prev) =>
+        current.name.toLowerCase() < prev.name.toLowerCase()
+          ? -1
+          : current.name.toLowerCase() > prev.name.toLowerCase()
+          ? 1
+          : 0
+      );
+    case 'nameZ':
+      return copy.sort((current, prev) =>
+        current.name.toLowerCase() < prev.name.toLowerCase()
+          ? 1
+          : current.name.toLowerCase() > prev.name.toLowerCase()
+          ? -1
+          : 0
+      );
+
+    default:
+      break;
+  }
+};
+
+export const filterOptions = [
+  'cat_work',
+  'cat_study',
+  'cat_entertainment',
+  'cat_workout',
+  'completed',
+  'uncompleted',
+];

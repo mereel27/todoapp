@@ -15,7 +15,7 @@ export default memo(function DatePicker({
   const [hours, setHours] = useState(getTime(date).hours);
   const [minutes, setMinutes] = useState(getTime(date).minutes)
 
-  const handleDayClick = (date) => {
+  const handleDayClick = useCallback((date) => {
     if (!currentDate) {
       setCurrentDate(date);
     } else if (
@@ -26,7 +26,7 @@ export default memo(function DatePicker({
     } else {
       setCurrentDate(date);
     }
-  };
+  }, [currentDate]);
 
   const handleOkButton = () => {
     currentDate.setHours(hours, minutes);
@@ -38,7 +38,7 @@ export default memo(function DatePicker({
 
   return (
     <Modal
-      css={{borderRadius: '4px'}}
+      /* css={{borderRadius: '$xs',}} */
       open={open}
       onClose={handleClose}
       className="modal-container"
@@ -50,17 +50,12 @@ export default memo(function DatePicker({
         <div className="date-picker__calendar-container">
           <MyCalendar
             onClickDay={handleDayClick}
-            tileClassName={({ date }) =>
-              currentDate &&
-              (date.getDate() === currentDate.getDate()) &
-                (date.getMonth() === currentDate.getMonth())
-                ? 'current-day'
-                : null
-            }
+            currentDay={currentDate}
             value={date}
             locale="en"
             minDetail="decade"
             className="date-picker__calendar"
+            /* showNeighboringMonth={true} */
           />
         </div>
         <TimePicker

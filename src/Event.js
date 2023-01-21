@@ -1,10 +1,10 @@
 import { getShortDate, getDateObject } from './utils';
 import { Text, Collapse, Button, Grid } from '@nextui-org/react';
 import { Trash } from 'iconsax-react';
-import CheckButton from './CheckButton';
 import DeleteEventDialog from './DeleteEventDialog';
 import { useContext, useState } from 'react';
 import { Context } from './CalendarView';
+import EventCheckbox from './EventCheckbox';
 
 export default function Event({
   event,
@@ -26,7 +26,6 @@ export default function Event({
     <Collapse
       shadow
       css={{
-        borderRadius: '3px',
         opacity: deleted ? '0' : '',
         transform: deleted ? 'translateX(50%)' : '',
         transition: 'opacity .25s, transform .25s',
@@ -48,21 +47,13 @@ export default function Event({
       showArrow={false}
       contentLeft={
         <>
-          <CheckButton
-            checked={event.isDone}
-            onPress={() => handleClick(event)}
-          />
-          <Text
-            span
-            css={{
-              textDecoration: event.isDone ? 'line-through' : null,
-              marginLeft: '10px',
-              fontWeight: '$semibold',
-              whiteSpace: 'nowrap',
-            }}
+          <EventCheckbox
+            isSelected={event.isDone}
+            onChange={() => handleClick(event)}
+            lineThrough
           >
             {event.name}
-          </Text>
+          </EventCheckbox>
           <Text span weight="medium" size="$sm" css={{ marginLeft: 'auto' }}>
             {todoView === 'month' ? (
               <>
@@ -118,7 +109,6 @@ export default function Event({
           onPress={() => handleDetailsClick(event)}
           aria-label="View details"
           css={{
-            borderRadius: '3px',
             '&:hover': {
               backgroundColor: '$purple100',
             },
@@ -140,7 +130,6 @@ export default function Event({
               marginLeft: 'auto',
               fontSize: '20px',
               padding: '$0 $sm',
-              borderRadius: '3px',
               '&:hover': {
                 backgroundColor: '$red100',
               },

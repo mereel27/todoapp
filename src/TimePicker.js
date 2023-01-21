@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Input, Grid, Text, Popover, styled } from '@nextui-org/react';
 import TimeButton from './TimeButton';
-import { FiClock } from 'react-icons/fi';
+import { Clock } from 'iconsax-react';
 import { hoursArray, minutesArray } from './utils';
 
 const RightFlexbox = styled(Grid, {
@@ -18,7 +18,7 @@ const RightFlexbox = styled(Grid, {
     backgroundColor: '$primary',
     backgroundClip: 'content-box',
     height: '35px',
-    borderRadius: '3px',
+    borderRadius: '4px',
     border: '2px solid transparent',
   },
 });
@@ -101,7 +101,7 @@ export default function TimePicker({hours, minutes, handleHoursChange, handleMin
             size="lg"
             width="110px"
             aria-label="Select time"
-            contentLeft={<FiClock />}
+            contentLeft={<Clock />}
             contentClickable
             readOnly
             initialValue={new Date().toLocaleTimeString('no', {
@@ -120,7 +120,7 @@ export default function TimePicker({hours, minutes, handleHoursChange, handleMin
                 userSelect: 'none',
               },
               '.nextui-input-wrapper': {
-                borderRadius: '4px',
+                /* borderRadius: '4px', */
                 height: '45px',
               },
             }}
@@ -130,7 +130,7 @@ export default function TimePicker({hours, minutes, handleHoursChange, handleMin
           css={{
             overflowY: 'hidden',
             border: '2px solid $accents0',
-            borderRadius: '3px',
+            /* borderRadius: '3px', */
           }}
         >
           <Grid.Container gap={2}>

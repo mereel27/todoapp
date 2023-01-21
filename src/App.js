@@ -14,7 +14,7 @@ const theme = createTheme({
       accentColor: 'rgba(90, 149, 255)',
       mainText: '#050505',
       inputPlaceholder: 'rgba(124, 135, 165, 0.598)',
-      eventsBackground: 'rgba(237, 245, 255, 0.4)',
+      eventsBackground: 'rgba(241, 243, 245, 0.5)',
       violetEvent: '#7828C8',
       greenEvent: '#17C964',
       orangeEvent: '#F5A524',

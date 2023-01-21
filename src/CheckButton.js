@@ -1,13 +1,13 @@
 import { Button, styled } from '@nextui-org/react';
-import { BsCheckCircle, BsCheckCircleFill } from 'react-icons/bs';
+import { Check } from 'iconsax-react';
 
-const CheckedIcon = styled(BsCheckCircleFill, {
+/* const CheckedIcon = styled(BsCheckCircleFill, {
   color: '$success',
 });
 
 const Icon = styled(BsCheckCircle, {
   color: '$accents8',
-});
+}); */
 
 export default function CheckButton({ checked, ...props }) {
   return (
@@ -24,7 +24,7 @@ export default function CheckButton({ checked, ...props }) {
           backgroundColor: '$accents0'
         }
       }}
-      icon={checked ? <CheckedIcon /> : <Icon />}
+      icon={checked ? <Check /> : <Check />}
       {...props}
     ></Button>
   );

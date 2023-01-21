@@ -11,7 +11,7 @@ export default function ItemList({ items }) {
           disableOutline
           color="primary"
           key={index}
-          css={{ flexGrow: 1, borderRadius: '3px' }}
+          css={{ flexGrow: 1 }}
         >
           {item}
         </Badge>

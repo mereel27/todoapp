@@ -1,8 +1,8 @@
 import { Modal, Checkbox, styled } from '@nextui-org/react';
 
 const CustomCheckbox = styled(Checkbox, {
-  '.nextui-checkbox-container': {
-    borderRadius: '3px'
+  '.nextui-checkbox-text': {
+    fontSize: '$lg'
   },
 })
 
@@ -16,11 +16,11 @@ export default function NotificationCheckboxGroup({
 }) {
   return (
     <Modal
-      css={{borderRadius: '3px'}}
+      css={{borderRadius: '$xs'}}
       open={open}
       onClose={handleClose}
       className="modal-container"
-      width="480px"
+      /* width="480px" */
       blur
     >
       <Modal.Body css={{padding: '30px'}}>
@@ -30,8 +30,15 @@ export default function NotificationCheckboxGroup({
           label="Select time"
           onChange={handleChange}
           name={name}
+          css={{
+            '.nextui-checkbox-group-items': {
+              '& label:not(:first-child)': {
+                marginTop: '20px'
+              }
+            }
+          }}
         >
-          {options.map((el, index) => <CustomCheckbox value={index} key={index}>{el}</CustomCheckbox>)}
+          {options.map((el, index) => <CustomCheckbox size='lg' value={index} key={index}>{el}</CustomCheckbox>)}
         </Checkbox.Group>
       </Modal.Body>
     </Modal>

@@ -5,23 +5,16 @@ import {
   useMemo,
   useCallback,
 } from 'react';
-import Calendar from 'react-calendar';
-import { Container, Grid } from '@nextui-org/react';
+import { Container, Grid, styled } from '@nextui-org/react';
 import Logo from './Logo';
 import DailyView from './DailyView';
 import EventsList from './EventsList';
 import BottomToolbar from './BottomToolbar';
-import ViewSwitcher from './ViewSwitcher';
 import EventMark from './EventMark';
-import {
-  getDateWithCurrentTime,
-  dateToString,
-  getNumericDate,
-} from './utils';
-import DoubleArrowRight from './DoubleArrowRight';
-import DoubleArrowLeft from './DoubleArrowLeft';
-import { ArrowLeft2, ArrowRight2 } from 'iconsax-react';
-import { styled } from '@nextui-org/react';
+import { getDateWithCurrentTime, getNumericDate, sortEvents, filterOptions } from './utils';
+import ViewNavigation from './ViewNavigation';
+import MyCalendar from './MyCalendar';
+import EventsControlPanel from './EventsControlPanel';
 
 const MarkContainer = styled('div', {
   width: '100%',
@@ -30,6 +23,7 @@ const MarkContainer = styled('div', {
   bottom: '1px',
   justifyContent: 'center',
   overflow: 'hidden',
+  zIndex: 3,
 });
 
 export const Context = createContext();
@@ -37,7 +31,7 @@ export const Context = createContext();
 export default function CalendarView() {
   /////////////// Events state ////////////////////
   const [today] = useState(new Date());
-  const [view, setView] = useState('month');
+  /* const [ calendarView, setCalendarView ] = useState('month'); */
   const [todoView, setTodoView] = useState('month');
   const [currentMonth, setCurrentMonth] = useState(
     new Date(today.getFullYear(), today.getMonth())
@@ -47,8 +41,8 @@ export default function CalendarView() {
     JSON.parse(localStorage.getItem('events')) || {}
   );
 
-  const [currentEvents, setCurrentEvents] = useState([]);
-  const [pendingNotifications, setPendingNotifications] = useState({});
+  const [sortBy, setSortBy] = useState('nearest');
+  const [ filters, setFilters ] = useState(filterOptions);
 
   const dateTime = useMemo(() => {
     if (currentDay && currentDay.getMonth() === currentMonth.getMonth()) {
@@ -59,64 +53,60 @@ export default function CalendarView() {
       return today;
     }
   }, [currentDay, currentMonth, today]);
+
+  const allEvents = useMemo(() => {
+    console.log('all events change');
+    return sortEvents(Object.values(events).flat(), sortBy)
+  }, [events, sortBy]);
+
+  const monthViewEvents = useMemo(() => {
+    console.log('month events change');
+    const date = currentDay
+      ? getNumericDate(currentDay)
+      : getNumericDate(currentMonth);
+    if (currentDay) {
+      return events[date] ? sortEvents(events[date], sortBy) : [];
+    } else {
+      const keys = Object.keys(events).filter(
+        (key) => key.slice(-5) === date.slice(-5)
+      );
+      const monthEvents = keys.flatMap((key) => events[key]);
+      return sortEvents(monthEvents, sortBy);
+    }
+  }, [currentDay, currentMonth, events, sortBy]);
+
+  const dayViewEvents = useMemo(() => {
+    console.log('day events change');
+    if (currentDay) {
+      const date = getNumericDate(currentDay);
+      return events[date] ? sortEvents(events[date], sortBy) : [];
+    }
+    const date = getNumericDate(currentMonth);
+    const todayDate = getNumericDate(today);
+    if (
+      currentMonth.getMonth() === today.getMonth() &&
+      currentMonth.getFullYear() === today.getFullYear()
+    ) {
+      return events[todayDate] ? sortEvents(events[todayDate], sortBy) : [];
+    } else {
+      return events[date] ? sortEvents(events[date], sortBy) : [];
+    }
+  }, [currentDay, currentMonth, events, today, sortBy]);
   //////////////// ------------ ///////////////////////
 
   /////////////// Events effects ////////////////////
-
-  // Change current events on date change
-  useEffect(() => {
-    if (currentDay) {
-      const date = getNumericDate(currentDay);
-      setCurrentEvents(events[date] || []);
-    } else {
-      const date = getNumericDate(currentMonth);
-      const todayDate = getNumericDate(today);
-      if (todoView === 'day') {
-        if (currentMonth.getMonth() === today.getMonth() 
-            && currentMonth.getFullYear() === today.getFullYear()) {
-              setCurrentEvents(events[todayDate] || []);
-            } else {
-              setCurrentEvents(events[date] || []);
-            }
-      } else {
-        const keys = Object.keys(events).filter(
-          (key) => key.slice(-5) === date.slice(-5)
-        );
-        const monthEvents = keys.flatMap((key) => events[key]);
-        setCurrentEvents(monthEvents);
-      }
-    }
-  }, [currentDay, currentMonth, events, todoView, today]);
 
   // Save event to local storage
   useEffect(() => {
     localStorage.setItem('events', JSON.stringify(events));
   }, [events]);
 
-  // First day of month position
   useEffect(() => {
-    if (view === 'month') {
-      const firstDayOfMonth = dateToString(currentMonth);
-      const dayNumber = currentMonth.getDay();
-      const firstDayElement = document.querySelector(
-        `.react-calendar__tile abbr[aria-label="${firstDayOfMonth}"]`
-      );
-      firstDayElement.parentElement.style.gridColumn = dayNumber || 7;
-      firstDayElement.parentElement.style.marginLeft = null;
-    }
-  }, [currentMonth, view]);
-
-  useEffect(() => {
-    const pending = Object.keys(pendingNotifications);
-    pending.length > 0 &&
-      pending.forEach((key) => {
-        console.log(key);
-      });
-  }, [pendingNotifications]);
+    console.log('effect')
+  }, [filters])
   /////////////// ------------ ////////////////////////
 
   /////////////// Events handlers ////////////////////
-
   const addNewEvent = useCallback((event) => {
     setEvents((prev) => {
       return {
@@ -129,11 +119,11 @@ export default function CalendarView() {
   const deleteEvent = useCallback((event) => {
     setEvents((prev) => {
       if (prev[event.shortDate].length < 2) {
-        const newState = {...prev};
+        const newState = { ...prev };
         delete newState[event.shortDate];
         return newState;
       }
-       return {
+      return {
         ...prev,
         [event.shortDate]: prev[event.shortDate].filter(
           (current) => current.id !== event.id
@@ -177,26 +167,32 @@ export default function CalendarView() {
     });
   }, []);
 
-  const handleDayClick = (date) => {
-    const month = new Date(date.getFullYear(), date.getMonth());
-    if (!currentDay) {
-      setCurrentDay(date);
-      setCurrentMonth(month);
-    } else if (currentDay.getTime() === date.getTime()) {
-      setCurrentDay(null);
-    } else {
-      setCurrentDay(date);
-      setCurrentMonth(month);
-    }
-  };
-  /////////////// ------------ ////////////////////////
+  const handleDayClick = useCallback(
+    (date) => {
+      const month = new Date(date.getFullYear(), date.getMonth());
+      if (!currentDay) {
+        setCurrentDay(date);
+        setCurrentMonth(month);
+      } else if (currentDay.getTime() === date.getTime()) {
+        setCurrentDay(null);
+      } else {
+        setCurrentDay(date);
+        setCurrentMonth(month);
+      }
+    },
+    [currentDay]
+  );
+
+  const handleMonthChange = useCallback((date) => setCurrentMonth(date), []);
 
   return (
     <Context.Provider
       value={{
         dateTime,
         events,
-        currentEvents,
+        dayViewEvents,
+        monthViewEvents,
+        allEvents,
         addNewEvent,
         deleteEvent,
         handleEventCheckClick,
@@ -209,7 +205,7 @@ export default function CalendarView() {
           display: 'flex',
           flexDirection: 'column',
           flexWrap: 'nowrap',
-          height: '100%',
+          minHeight: '100vh',
           padding: 0,
           position: 'relative',
           maxWidth: '500px',
@@ -219,47 +215,38 @@ export default function CalendarView() {
           <Grid css={{ margin: '0 auto 19px auto', width: 'fit-content' }}>
             <Logo width="47" height="15" />
           </Grid>
-          <ViewSwitcher todoView={todoView} handleClick={handleViewClick} />
+          <ViewNavigation active={todoView} handleClick={handleViewClick} />
         </Grid>
-        {todoView === 'month' ? (
-          <>
-            <Grid css={{ marginBottom: '20px' }}>
-              <Calendar
-                /* value={today} */
-                activeStartDate={currentMonth}
-                locale="en"
-                minDetail="decade"
-                onActiveStartDateChange={({ activeStartDate }) => {
-                  /* setCurrentDay(null); */
-                  setCurrentMonth(activeStartDate);
-                }}
-                showNeighboringMonth={true}
-                onViewChange={({ view }) => setView(view)}
-                onClickDay={handleDayClick}
-                tileContent={setMark}
-                tileClassName={({ date }) =>
-                  currentDay && dateToString(date) === dateToString(currentDay)
-                    ? 'current-day'
-                    : null
-                }
-                formatShortWeekday={(locale, date) =>
-                  date.toLocaleString(locale, { weekday: 'short' }).slice(0, 2)
-                }
-                nextLabel={<ArrowRight2 size="1.3rem" />}
-                prevLabel={<ArrowLeft2 size="1.3rem" />}
-                next2Label={<DoubleArrowRight size="1.3rem" />}
-                prev2Label={<DoubleArrowLeft size="1.3rem" />}
-              />
-            </Grid>
-            <EventsList
-              handleEventCheckClick={handleEventCheckClick}
-              events={currentEvents}
-              day={currentDay}
-            />
-          </>
-        ) : (
+        {todoView === 'day' && (
           <DailyView day={dateTime} handleDayChange={handleDayClick} />
         )}
+        {todoView === 'month' && (
+          <Grid
+            css={{
+              '@media (max-width: 500px)': { p: '0 10px' },
+            }}
+          >
+            <MyCalendar
+              activeStartDate={currentMonth}
+              locale="en"
+              minDetail="decade"
+              onMonthChange={handleMonthChange}
+              onClickDay={handleDayClick}
+              tileContent={setMark}
+              currentDay={currentDay}
+            />
+          </Grid>
+        )}
+        <EventsControlPanel setSortBy={setSortBy} sortBy={new Set([sortBy])} filters={filters} setFilters={setFilters}/>
+        <EventsList
+          day={
+            todoView === 'day'
+              ? dateTime
+              : todoView === 'month'
+              ? currentDay
+              : null
+          }
+        />
         <BottomToolbar />
       </Container>
     </Context.Provider>

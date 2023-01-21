@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, useCallback } from 'react';
-import { formatDate, getNotificationTime, getNumericDate } from './utils';
+import { formatDate, /* getNotificationTime, */ getNumericDate } from './utils';
 import { Context } from './CalendarView';
 import DatePicker from './DatePicker';
 import EventInput from './EventInput';
@@ -9,7 +9,6 @@ import ColorButtons from './ColorButtons';
 import ModalButton from './ModalButton';
 import EventDescriptionInput from './EventDescriptionInput';
 import { Modal, Text, Checkbox, styled } from '@nextui-org/react';
-import NewInput from './NewInput';
 
 const colors = ['violet', 'green', 'orange', 'red'];
 
@@ -179,7 +178,7 @@ export default function NewEvent({ handleClose, open }) {
       <Modal
         open={open}
         onClose={handleClose}
-        css={{ fontSize: '16px', borderRadius: '3px' }}
+        css={{ fontSize: '16px' }}
         width="500px"
         closeButton
         blur
@@ -195,15 +194,14 @@ export default function NewEvent({ handleClose, open }) {
             <Succes
               color="successIcon"
               isSelected={successCheck}
-              isIndeterminate
-              isReadOnly
-              excludeFromTabOrder
+              readOnly
+              /* excludeFromTabOrder */
               aria-label="success icon"
             />
           </SuccessContainer>
           <Form name="new-event" id="new-event" onSubmit={handleAddButton}>
             <div>
-              <NewInput
+              <EventInput
                 name="topic"
                 label="Topic"
                 placeholder="Write topic"
@@ -229,7 +227,7 @@ export default function NewEvent({ handleClose, open }) {
                 value={description}
                 onChange={handleDescriptionChange}
               />
-              <NewInput
+              <EventInput
                 name="date"
                 label="Date"
                 placeholder="Choose date"
@@ -240,7 +238,7 @@ export default function NewEvent({ handleClose, open }) {
                 aria-haspopup="true"
                 role="button"
               />
-              <NewInput
+              <EventInput
                 name="notification"
                 label="Notifications"
                 value={getSelectedItems.join(', ')}

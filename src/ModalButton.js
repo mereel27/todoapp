@@ -10,7 +10,7 @@ export default forwardRef(function ModalButton({ children, regular,...props}, re
         width: '100%',
         fontWeight: '$medium',
         minWidth: 'unset',
-        borderRadius: '3px',
+        /* borderRadius: '$xs', */
         '&:hover': {
           backgroundColor: regular ? '$blue700' : '',
         },

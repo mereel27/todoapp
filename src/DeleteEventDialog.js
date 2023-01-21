@@ -3,7 +3,7 @@ import { Popover, Grid, Button, Text, styled } from '@nextui-org/react';
 const PopoverButton = styled(Button, {
   flexBasis: '50%',
   flexGrow: 1,
-  borderRadius: '3px',
+  borderRadius: '$xs',
   display: 'inline-flex',
   fontSize: '$md !important',
 });
@@ -15,21 +15,25 @@ export default function DeleteEventDialog({
   handleDelete,
 }) {
   return (
-    <Popover placement="top" isBordered isOpen={open} onOpenChange={setOpen}>
+    <Popover
+      placement="top"
+      isBordered
+      isOpen={open}
+      onOpenChange={setOpen}
+      disableAnimation
+    >
       <Popover.Trigger>{children}</Popover.Trigger>
       <Popover.Content
         css={{
-          maxWidth: '250px',
-          borderRadius: '3px',
-          p: '$5',
+          borderRadius: '$xs',
+          p: '$5 $7',
           textAlign: 'center',
         }}
-        className="HUUUUI"
       >
         <Text span weight="semibold" css={{ display: 'block' }}>
           Сonfirm
         </Text>
-        <Text span size="$sm">
+        <Text size="$sm">
           Are you sure you want to delete this event?
         </Text>
         <Grid css={{ display: 'flex', marginTop: '$5', gap: '$5' }}>

@@ -1,6 +1,6 @@
 import { Button, styled, Radio } from '@nextui-org/react';
-import { BsCheckLg } from 'react-icons/bs';
 import { eventColorsMap } from './utils';
+import TickIcon from './IconsComponents/TickIcon';
 
 const ColorButton = styled(Button, {
   variants: {
@@ -51,8 +51,8 @@ export default function ColorButtons({
           key={index}
           color={eventColorsMap[color]}
           size="colorRound"
-          shadow
-          icon={currentColor === color ? <BsCheckLg /> : ''}
+          shadow={currentColor === color}
+          icon={currentColor === color ? <TickIcon size='40' /> : ''}
           onPress={() => handleClick(color)}
           aria-label={color}
           aria-checked={currentColor === color}

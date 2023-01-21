@@ -1,7 +1,7 @@
 import { eventColorsMap } from './utils';
 import { Modal, Text, Card, Grid, styled } from '@nextui-org/react';
 import DeleteEventDialog from './DeleteEventDialog';
-import CheckButton from './CheckButton';
+import EventCheckbox from './EventCheckbox';
 import ModalButton from './ModalButton';
 import { Calendar } from 'iconsax-react';
 import { getDateObject, formatDate } from './utils';
@@ -34,7 +34,6 @@ export default function EventDetails({
       onClose={handleClose}
       css={{ padding: '$10' }}
       blur
-      /* width="500px" */
       closeButton
     >
       <Modal.Header
@@ -72,13 +71,12 @@ export default function EventDetails({
         <Text>{event.description}</Text>
         <Card.Divider css={{ marginBottom: '$10' }}></Card.Divider>
         <Grid css={{ display: 'flex', alignItems: 'center' }}>
-          <CheckButton
-            checked={event.isDone}
-            onPress={() => handleEventCheckClick(event)}
-          />
-          <Text span weight="medium" css={{ marginLeft: '10px' }}>
-            {event.isDone ? 'Completed' : 'Uncompleted'}
-          </Text>
+          <EventCheckbox
+            isSelected={event.isDone}
+            onChange={() => handleEventCheckClick(event)}
+          >
+            {event.isDone ? 'completed' : 'uncompleted'}
+          </EventCheckbox>
         </Grid>
       </Modal.Body>
       <Modal.Footer
@@ -93,12 +91,7 @@ export default function EventDetails({
           setOpen={setDialogOpen}
           handleDelete={deleteEvent}
         >
-          <ModalButton
-            color="error"
-            aria-label="Delete event"
-            flat
-            auto
-          >
+          <ModalButton color="error" aria-label="Delete event" flat auto>
             Delete
           </ModalButton>
         </DeleteEventDialog>

@@ -17,7 +17,7 @@ export default function NewInput(props) {
           '&::placeholder': {
             color: '$inputPlaceholder !important'
           },
-          padding: '10px 0',
+          padding: '5px 0',
           cursor: props.name === 'date' || props.name === 'notification' ? 'pointer' : '',
           color: props.name === 'notification' ? 'transparent' : '',
         },

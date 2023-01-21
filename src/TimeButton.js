@@ -25,7 +25,7 @@ const TimeBtn = styled(Button, {
         flexShrink: '0',
         flexGrow: '0',
         minWidth: 'unset',
-        borderRadius: '3px',
+        /* borderRadius: '$xs', */
       },
     },
   },
