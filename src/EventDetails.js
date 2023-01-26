@@ -27,7 +27,6 @@ export default function EventDetails({
     handleClose(false);
     setTimeout(() => handleDeleteEvent(event), 200);
   };
-
   return (
     <Modal
       open={open}
@@ -42,25 +41,29 @@ export default function EventDetails({
         css={{ marginBottom: '$10' }}
       >
         <Card
+          role="separator"
           css={{
             borderRadius: '50%',
-            backgroundColor: `$${eventColorsMap[event.color]}`,
+            backgroundColor: `$${eventColorsMap[event.category]}`,
             width: '10px',
             height: '10px',
             margin: '0 5px',
+            flexShrink: 0,
           }}
         ></Card>
-        <Text
-          h4
-          css={{
-            textDecoration: event.isDone ? 'line-through' : null,
-            marginLeft: '10px',
-            fontWeight: '$semibold',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {event.name}
-        </Text>
+          <Text
+            h4
+            css={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              textDecoration: event.isDone ? 'line-through' : null,
+              marginLeft: '10px',
+              fontWeight: '$semibold',
+            }}
+          >
+            {event.name}
+          </Text>
       </Modal.Header>
       <Modal.Body noPadding css={{ marginBottom: '$10' }}>
         <Grid css={{ display: 'flex', alignItems: 'center' }}>
@@ -68,7 +71,7 @@ export default function EventDetails({
           <Text span>{formatDate(getDateObject(event.date).dateObject)}</Text>
         </Grid>
         <Card.Divider css={{ marginBottom: '$8' }}></Card.Divider>
-        <Text>{event.description}</Text>
+        <Text>{event.description || <em>No description</em>}</Text>
         <Card.Divider css={{ marginBottom: '$10' }}></Card.Divider>
         <Grid css={{ display: 'flex', alignItems: 'center' }}>
           <EventCheckbox

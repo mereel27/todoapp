@@ -10,7 +10,7 @@ import ModalButton from './ModalButton';
 import EventDescriptionInput from './EventDescriptionInput';
 import { Modal, Text, Checkbox, styled } from '@nextui-org/react';
 
-const colors = ['violet', 'green', 'orange', 'red'];
+const categories = ['work', 'study', 'entertainment', 'workout'];
 
 const Form = styled('form', {});
 
@@ -98,7 +98,7 @@ export default function NewEvent({ handleClose, open }) {
   });
   const [description, setDescription] = useState('');
   const [inputDate, setInputDate] = useState([formatDate(dateTime), dateTime]);
-  const [eventColor, setEventColor] = useState(colors[0]);
+  const [eventCategory, setEventCategory] = useState(categories[0]);
   const [selected, setSelected] = useState([]);
   const [checkboxOpen, setCheckboxOpen] = useState(false);
   const [successCheck, setSuccessCheck] = useState(false);
@@ -149,7 +149,7 @@ export default function NewEvent({ handleClose, open }) {
         shortDate: getNumericDate(inputDate[1]),
         isDone: false,
         description,
-        color: eventColor,
+        category: eventCategory,
         notifications: selected.map((el) => notificationOptions[el]),
         id: Date.now(),
       };
@@ -163,7 +163,7 @@ export default function NewEvent({ handleClose, open }) {
     setSelected([]);
     setTopic('');
     setDescription('');
-    setEventColor(colors[0]);
+    setEventCategory(categories[0]);
   };
 
   const successIconAnimation = () => {
@@ -256,9 +256,9 @@ export default function NewEvent({ handleClose, open }) {
                 handleChange={setSelected}
               />
               <ColorButtons
-                colors={colors}
-                currentColor={eventColor}
-                handleClick={setEventColor}
+                categories={categories}
+                currentCategory={eventCategory}
+                handleClick={setEventCategory}
               />
             </div>
           </Form>

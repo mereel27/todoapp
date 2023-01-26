@@ -38,7 +38,7 @@ export default memo(function DatePicker({
 
   return (
     <Modal
-      /* css={{borderRadius: '$xs',}} */
+      css={{paddingTop: '$xl'}}
       open={open}
       onClose={handleClose}
       className="modal-container"
@@ -46,11 +46,12 @@ export default memo(function DatePicker({
       blur
       closeButton
     >
-      <Modal.Body css={{ padding: '$sm $lg' }}>
+      <Modal.Body css={{ padding: '$sm $lg', '@media (max-width: 350px)': {padding: '$sm'} }}>
         <div className="date-picker__calendar-container">
           <MyCalendar
             onClickDay={handleDayClick}
             currentDay={currentDate}
+            activeStartDate={currentDate}
             value={date}
             locale="en"
             minDetail="decade"
@@ -65,7 +66,7 @@ export default memo(function DatePicker({
           handleMinutesChange={handleMinutesChange}
         />
       </Modal.Body>
-      <Modal.Footer css={{ flexWrap: 'nowrap', padding: '$lg' }}>
+      <Modal.Footer css={{ flexWrap: 'nowrap', padding: '$lg', '@media (max-width: 350px)': {padding: '$sm $sm $lg'} }}>
         <ModalButton
           color="error"
           flat

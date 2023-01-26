@@ -34,14 +34,24 @@
 .react-calendar button {
   font-size: inherit;
   font-family: inherit;
-  font-weight: inherit;
   border: none;
   cursor: pointer;
   position: relative;
 }
 
+.react-calendar__month-view__days, 
+.react-calendar__year-view__months, 
+.react-calendar__decade-view__years {
+  margin: 2px;
+}
+
+.react-calendar button:focus-visible {
+  outline: 2px solid var(--nextui-colors-primary);
+}
+
 .react-calendar__tile {
   z-index: 2;
+  font-weight: var(--nextui-fontWeights-semibold);
 }
 
 .react-calendar__tile,
@@ -50,27 +60,44 @@
 }
 
 .react-calendar__navigation {
-  margin-bottom: 15px;
+  height: 45px;
+  padding-bottom: 12px;
   display: flex;
+  background-color: white;
+  z-index: 1000;
+  margin: 2px;
+}
+
+.react-calendar__navigation__label, .react-calendar__navigation__arrow {
+  padding: 4px;
 }
 
 .react-calendar__navigation__label {
-  padding: 4px;
-  color: rgba(var(--main-text-color), 1);
+  font-weight: var(--nextui-fontWeights-bold);
 }
 
 .react-calendar__navigation__arrow {
-  padding: 4px;
   flex-basis: 14.2857%;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: var(--nextui-colors-blue900)
 }
 
 .react-calendar__navigation__arrow:hover,
 .react-calendar__navigation__label:hover {
   background-color: var(--nextui-colors-accents0);
-  border-radius: var(--nextui-radii-sm);
+  /* border-radius: var(--nextui-radii-sm); */
+}
+
+ .react-calendar__navigation__prev2-button {
+  border-top-left-radius: var(--nextui-radii-sm);
+  border-bottom-left-radius: var(--nextui-radii-sm);
+}
+
+.react-calendar__navigation__next2-button {
+  border-top-right-radius: var(--nextui-radii-sm);
+  border-bottom-right-radius: var(--nextui-radii-sm);
 }
 
 .react-calendar__navigation__next-button:active svg,
@@ -225,6 +252,7 @@
   margin: 0 auto;
   font-size: 14px;
   font-weight: 600;
+  overflow: hidden;
   /* color: var(--calendar-text-main); */
 }
 
@@ -302,14 +330,16 @@
 
 .react-calendar__tile--now.react-calendar__year-view__months__month,
 .react-calendar__tile--now.react-calendar__decade-view__years__year {
-  color: var(--secondary-accent-color);
+  background-color: var(--nextui-colors-blue300);
+  color: var(--nextui-colors-primary);
+  border-radius: var(--nextui-radii-xs);
 }
 
 :is(
     .react-calendar__year-view__months__month,
     .react-calendar__decade-view__years__year
   ):hover {
-  color: rgb(var(--accent-color));
+    color: var(--nextui-colors-primary);
 }
 
 .modal-container {
@@ -491,7 +521,7 @@
 
 .date-picker__calendar
   :is(
-    .react-calendar__navigation,
+    /* .react-calendar__navigation, */
     .react-calendar__month-view__weekdays,
     .react-calendar__month-view__days
   ) {
@@ -736,6 +766,11 @@
   .date-picker__calendar .react-calendar__year-view,
   .date-picker__calendar .react-calendar__decade-view {
     aspect-ratio: 1 / 1.5;
+  }
+  .react-calendar__month-view,
+  .react-calendar__year-view,
+  .react-calendar__decade-view {
+    aspect-ratio: 1 / 1.25;
   }
   .react-calendar__tile--now:not(
       .react-calendar__year-view__months__month,

@@ -12,6 +12,7 @@ export default function DeleteEventDialog({
   open,
   setOpen,
   children,
+  itemsQuantity,
   handleDelete,
 }) {
   return (
@@ -34,7 +35,15 @@ export default function DeleteEventDialog({
           Сonfirm
         </Text>
         <Text size="$sm">
-          Are you sure you want to delete this event?
+          Are you sure you want to delete{' '}
+          {itemsQuantity ? (
+            <Text span weight="bold">
+              {itemsQuantity}
+            </Text>
+          ) : (
+            'this'
+          )}{' '}
+          event{`${itemsQuantity && itemsQuantity > 1 ? 's' : ''}?`}
         </Text>
         <Grid css={{ display: 'flex', marginTop: '$5', gap: '$5' }}>
           <PopoverButton auto light onPress={() => setOpen(false)}>

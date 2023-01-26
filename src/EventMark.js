@@ -9,24 +9,24 @@ const Mark = styled('div', {
   boxSizing: 'border-box',
   variants: {
     color: {
-      violet: {
+      work: {
         backgroundColor: '$secondary',
       },
-      green: {
+      study: {
         backgroundColor: '$success',
       },
-      orange: {
+      entertainment: {
         backgroundColor: '$warning',
       },
-      red: {
+      workout: {
         backgroundColor: '$error',
       },
     }
   }
 });
 
-export default function EventMark({color}) {
+export default function EventMark({category}) {
   return (
-    <Mark color={color}/>
+    <Mark color={category}/>
   )
 }

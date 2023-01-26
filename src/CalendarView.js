@@ -11,7 +11,13 @@ import DailyView from './DailyView';
 import EventsList from './EventsList';
 import BottomToolbar from './BottomToolbar';
 import EventMark from './EventMark';
-import { getDateWithCurrentTime, getNumericDate, sortEvents, filterOptions } from './utils';
+import {
+  getDateWithCurrentTime,
+  getNumericDate,
+  sortEvents,
+  defaultFilters,
+  filterEvents,
+} from './utils';
 import ViewNavigation from './ViewNavigation';
 import MyCalendar from './MyCalendar';
 import EventsControlPanel from './EventsControlPanel';
@@ -29,10 +35,10 @@ const MarkContainer = styled('div', {
 export const Context = createContext();
 
 export default function CalendarView() {
-  /////////////// Events state ////////////////////
+  // Events state
   const [today] = useState(new Date());
   /* const [ calendarView, setCalendarView ] = useState('month'); */
-  const [todoView, setTodoView] = useState('month');
+  const [todoView, setTodoView] = useState('all');
   const [currentMonth, setCurrentMonth] = useState(
     new Date(today.getFullYear(), today.getMonth())
   );
@@ -41,8 +47,14 @@ export default function CalendarView() {
     JSON.parse(localStorage.getItem('events')) || {}
   );
 
-  const [sortBy, setSortBy] = useState('nearest');
-  const [ filters, setFilters ] = useState(filterOptions);
+  const [sortBy, setSortBy] = useState(
+    JSON.parse(localStorage.getItem('sortBy')) || 'nearest'
+  );
+  const [filters, setFilters] = useState(
+    JSON.parse(localStorage.getItem('filters')) || defaultFilters
+  );
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedEvents, setSelectedEvents] = useState([]);
 
   const dateTime = useMemo(() => {
     if (currentDay && currentDay.getMonth() === currentMonth.getMonth()) {
@@ -55,31 +67,36 @@ export default function CalendarView() {
   }, [currentDay, currentMonth, today]);
 
   const allEvents = useMemo(() => {
-    console.log('all events change');
-    return sortEvents(Object.values(events).flat(), sortBy)
-  }, [events, sortBy]);
+    const eventsWithFilter = filterEvents(
+      Object.values(events).flat(),
+      filters
+    );
+    return sortEvents(eventsWithFilter, sortBy);
+  }, [events, sortBy, filters]);
 
   const monthViewEvents = useMemo(() => {
-    console.log('month events change');
     const date = currentDay
       ? getNumericDate(currentDay)
       : getNumericDate(currentMonth);
     if (currentDay) {
-      return events[date] ? sortEvents(events[date], sortBy) : [];
+      return events[date]
+        ? sortEvents(filterEvents(events[date], filters), sortBy)
+        : [];
     } else {
       const keys = Object.keys(events).filter(
         (key) => key.slice(-5) === date.slice(-5)
       );
       const monthEvents = keys.flatMap((key) => events[key]);
-      return sortEvents(monthEvents, sortBy);
+      return sortEvents(filterEvents(monthEvents, filters), sortBy);
     }
-  }, [currentDay, currentMonth, events, sortBy]);
+  }, [currentDay, currentMonth, events, sortBy, filters]);
 
   const dayViewEvents = useMemo(() => {
-    console.log('day events change');
     if (currentDay) {
       const date = getNumericDate(currentDay);
-      return events[date] ? sortEvents(events[date], sortBy) : [];
+      return events[date]
+        ? sortEvents(filterEvents(events[date], filters), sortBy)
+        : [];
     }
     const date = getNumericDate(currentMonth);
     const todayDate = getNumericDate(today);
@@ -87,26 +104,46 @@ export default function CalendarView() {
       currentMonth.getMonth() === today.getMonth() &&
       currentMonth.getFullYear() === today.getFullYear()
     ) {
-      return events[todayDate] ? sortEvents(events[todayDate], sortBy) : [];
+      return events[todayDate]
+        ? sortEvents(filterEvents(events[todayDate], filters), sortBy)
+        : [];
     } else {
-      return events[date] ? sortEvents(events[date], sortBy) : [];
+      return events[date]
+        ? sortEvents(filterEvents(events[date], filters), sortBy)
+        : [];
     }
-  }, [currentDay, currentMonth, events, today, sortBy]);
-  //////////////// ------------ ///////////////////////
+  }, [currentDay, currentMonth, events, today, sortBy, filters]);
 
-  /////////////// Events effects ////////////////////
+  // Events effects
 
-  // Save event to local storage
+  // Save events to local storage
   useEffect(() => {
     localStorage.setItem('events', JSON.stringify(events));
   }, [events]);
 
-  useEffect(() => {
-    console.log('effect')
-  }, [filters])
-  /////////////// ------------ ////////////////////////
+  //Save filter settings to local storage
+  useEffect(
+    () => localStorage.setItem('filters', JSON.stringify(filters)),
+    [filters]
+  );
 
-  /////////////// Events handlers ////////////////////
+  //Save sortBy settings to local storage
+  useEffect(
+    () => localStorage.setItem('sortBy', JSON.stringify(sortBy)),
+    [sortBy]
+  );
+
+  // Reset Selection
+  useEffect(() => {
+    !selectMode && setSelectedEvents([]);
+  }, [selectMode]);
+
+  // Turn off select mode
+  useEffect(() => {
+    allEvents.length < 1 && setSelectMode(false);
+  }, [allEvents.length]);
+
+  // Events handlers
   const addNewEvent = useCallback((event) => {
     setEvents((prev) => {
       return {
@@ -132,6 +169,7 @@ export default function CalendarView() {
     });
   }, []);
 
+  // Event mark for calendar
   const setMark = useCallback(
     ({ date }) => {
       const selectedDay = getNumericDate(date);
@@ -139,7 +177,7 @@ export default function CalendarView() {
         return (
           <MarkContainer>
             {events[selectedDay].slice(0, 4).map((ev, index) => (
-              <EventMark key={index} color={ev.color} />
+              <EventMark key={index} category={ev.category} />
             ))}
           </MarkContainer>
         );
@@ -185,6 +223,92 @@ export default function CalendarView() {
 
   const handleMonthChange = useCallback((date) => setCurrentMonth(date), []);
 
+  const handleSelectClick = () => setSelectMode((prev) => !prev);
+
+  const handleSelectEvent = useCallback((selectedEvent) => {
+    setSelectedEvents((prev) => {
+      const isPresent = prev.find((current) => current.id === selectedEvent.id);
+      if (isPresent) {
+        return prev.filter((current) => current.id !== selectedEvent.id);
+      } else {
+        return [
+          ...prev,
+          { id: selectedEvent.id, key: selectedEvent.shortDate },
+        ];
+      }
+    });
+  }, []);
+
+  const handleMultiplyDelete = useCallback(() => {
+    setEvents((prev) => {
+      let newState = { ...prev };
+      selectedEvents.forEach((el) => {
+        if (newState[el.key].length < 2) {
+          delete newState[el.key];
+        } else {
+          newState = {
+            ...newState,
+            [el.key]: newState[el.key].filter(
+              (current) => current.id !== el.id
+            ),
+          };
+        }
+      });
+      return newState;
+    });
+    setSelectedEvents([]);
+  }, [selectedEvents]);
+
+  const handleMultiplyCategoryChange = useCallback(
+    (cat) => {
+      setEvents((prev) => {
+        let newState = { ...prev };
+        selectedEvents.forEach((el) => {
+          newState[el.key] = newState[el.key].map((event) => {
+            if (event.id === el.id) {
+              event.category = cat;
+            }
+            return event;
+          });
+        });
+        return newState;
+      });
+    },
+    [selectedEvents]
+  );
+
+  const handleMultiplyStatusChange = useCallback(
+    (status) => {
+      setEvents((prev) => {
+        let newState = { ...prev };
+        selectedEvents.forEach((el) => {
+          newState[el.key] = newState[el.key].map((event) => {
+            if (event.id === el.id) {
+              event.isDone = status;
+            }
+            return event;
+          });
+        });
+        return newState;
+      });
+    },
+    [selectedEvents]
+  );
+
+  const handleCurrentDay = useCallback((value) => {
+    setCurrentDay(value);
+  }, []);
+
+  const currentEvents = useCallback(() => {
+    const events =
+      todoView === 'day'
+        ? dayViewEvents
+        : todoView === 'month'
+        ? monthViewEvents
+        : allEvents;
+    return events;
+  }, [allEvents, dayViewEvents, monthViewEvents, todoView]);
+
   return (
     <Context.Provider
       value={{
@@ -197,6 +321,7 @@ export default function CalendarView() {
         deleteEvent,
         handleEventCheckClick,
         todoView,
+        selectMode,
       }}
     >
       <Container
@@ -211,7 +336,7 @@ export default function CalendarView() {
           maxWidth: '500px',
         }}
       >
-        <Grid css={{ padding: '28px 0px 18px 0' }}>
+        <Grid css={{ padding: '28px 0px 18px 0', backgroundColor: '$white', zIndex: 10 }}>
           <Grid css={{ margin: '0 auto 19px auto', width: 'fit-content' }}>
             <Logo width="47" height="15" />
           </Grid>
@@ -234,10 +359,28 @@ export default function CalendarView() {
               onClickDay={handleDayClick}
               tileContent={setMark}
               currentDay={currentDay}
+              handleCurrentDay={handleCurrentDay}
+              /* showNavigation={false} */
+              showToolbar={true}
             />
           </Grid>
         )}
-        <EventsControlPanel setSortBy={setSortBy} sortBy={new Set([sortBy])} filters={filters} setFilters={setFilters}/>
+        {allEvents.length > 0 && (
+          <EventsControlPanel
+            setSortBy={setSortBy}
+            sortBy={new Set([sortBy])}
+            filters={filters}
+            setFilters={setFilters}
+            handleSelect={handleSelectClick}
+            handleMultiplyDelete={handleMultiplyDelete}
+            handleMultiplyCategoryChange={handleMultiplyCategoryChange}
+            handleMultiplyStatusChange={handleMultiplyStatusChange}
+            isSelect={selectMode}
+            actionsDisabled={selectedEvents.length < 1}
+            disabled={currentEvents().length < 1}
+            itemsQuantity={selectedEvents.length}
+          />
+        )}
         <EventsList
           day={
             todoView === 'day'
@@ -246,6 +389,8 @@ export default function CalendarView() {
               ? currentDay
               : null
           }
+          selectedEvents={selectedEvents}
+          handleSelectEvent={handleSelectEvent}
         />
         <BottomToolbar />
       </Container>

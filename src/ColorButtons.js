@@ -33,32 +33,32 @@ const ColorsRadioGroup = styled(Radio.Group, {
 });
 
 export default function ColorButtons({
-  colors,
-  currentColor,
+  categories,
+  currentCategory,
   handleClick,
   ...props
 }) {
   return (
     <ColorsRadioGroup
-      value={currentColor}
+      value={currentCategory}
       orientation="horizontal"
       onChange={handleClick}
       label='Select color'
       {...props}
     >
-      {colors.map((color, index) => (
+      {categories.map((cat, index) => (
         <ColorButton
           key={index}
-          color={eventColorsMap[color]}
+          color={eventColorsMap[cat]}
           size="colorRound"
-          shadow={currentColor === color}
-          icon={currentColor === color ? <TickIcon size='40' /> : ''}
-          onPress={() => handleClick(color)}
-          aria-label={color}
-          aria-checked={currentColor === color}
-          value={color}
+          shadow={currentCategory === cat}
+          icon={currentCategory === cat ? <TickIcon size='40' /> : ''}
+          onPress={() => handleClick(cat)}
+          aria-label={cat}
+          aria-checked={currentCategory === cat}
+          value={cat}
           role="radio"
-          tabIndex={currentColor === color ? 0 : -1}
+          tabIndex={currentCategory === cat ? 0 : -1}
         />
       ))}
     </ColorsRadioGroup>

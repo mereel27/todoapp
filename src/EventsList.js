@@ -5,10 +5,11 @@ import { getShortDate, getMonthName } from './utils';
 import EventDetails from './EventDetails';
 import { Context } from './CalendarView';
 
-export default memo(function EventsList({ day }) {
+export default memo(function EventsList({ day, selectedEvents, handleSelectEvent }) {
   const [event, setEvent] = useState(null);
   const [deletedEvent, setDeletedEvent] = useState(null);
   const [open, setOpen] = useState(undefined);
+  const [openedEvent, setOpenedEvent] = useState(null);
   const {
     dateTime,
     allEvents,
@@ -44,10 +45,14 @@ export default memo(function EventsList({ day }) {
     [deleteEvent]
   );
 
+  const handleCollapse = (key) => {
+    setOpenedEvent(key);
+  }
+
   return (
     <Grid.Container
       direction="column"
-      css={{ gap: '$5', height: '100%', flexWrap: 'nowrap', flexGrow: 1 }}
+      css={{ gap: '$5', height: '100%', flexWrap: 'nowrap', flexGrow: 1, marginTop: allEvents.length === 0 ? '$sm' : '' }}
     >
       <Container
         css={{
@@ -83,8 +88,12 @@ export default memo(function EventsList({ day }) {
                 event={event}
                 key={event.id}
                 handleClick={handleEventCheckClick}
+                expanded={openedEvent === event.id}
+                handleCollapse={handleCollapse}
                 handleDetailsClick={handleDetailsClick}
                 handleDeleteEvent={handleDeleteEvent}
+                handleSelectEvent={handleSelectEvent}
+                isSelected={selectedEvents.some(el => el.id === event.id)}
                 deleted={deletedEvent ? event.id === deletedEvent.id : false}
               />
             );

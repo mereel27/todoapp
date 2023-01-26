@@ -1,8 +1,8 @@
 export const eventColorsMap = {
-  violet: 'secondary',
-  green: 'success',
-  orange: 'warning',
-  red: 'error',
+  work: 'secondary',
+  study: 'success',
+  entertainment: 'warning',
+  workout: 'error',
 };
 
 export const notificationTimeMap = {
@@ -177,7 +177,7 @@ export const sortEvents = (events, sortBy) => {
   }
 };
 
-export const filterOptions = [
+export const defaultFilters = [
   'cat_work',
   'cat_study',
   'cat_entertainment',
@@ -185,3 +185,46 @@ export const filterOptions = [
   'completed',
   'uncompleted',
 ];
+
+const filterMap = {
+  'cat_work': 'violet',
+  'cat_study': 'green',
+  'cat_entertainment': 'orange',
+  'cat_workout': 'red',
+  'completed': true,
+  'uncompleted': false,
+}
+
+export const filterEvents = (events, currentFilters) => {
+  if (currentFilters.length < defaultFilters.length) {
+    if (currentFilters.length >= defaultFilters.length / 2) {
+      const excluded = defaultFilters.filter(el => !currentFilters.includes(el));
+      return events.filter(ev => {
+        return excluded.every(op => {
+          if (op.includes('cat')) {
+            return ev.color !== filterMap[op];
+          }
+          if (op.includes('completed')) {
+            return ev.isDone !== filterMap[op]
+          }
+          return true;
+        })
+      })
+    } else {
+      const included = defaultFilters.filter(el => currentFilters.includes(el));
+      return events.filter(ev => {
+        return included.every(op => {
+          if (op.includes('cat')) {
+            return ev.color === filterMap[op];
+          }
+          if (op.includes('completed')) {
+            return ev.isDone === filterMap[op]
+          }
+          return true;
+        })
+      })
+    }
+  } else {
+    return events;
+  }
+};
