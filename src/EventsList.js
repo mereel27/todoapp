@@ -1,4 +1,4 @@
-import { useContext, useState, useCallback, memo } from 'react';
+import { useContext, useState, useCallback, memo, useEffect } from 'react';
 import { Grid, Container, Text } from '@nextui-org/react';
 import Event from './Event';
 import { getShortDate, getMonthName } from './utils';
@@ -45,9 +45,13 @@ export default memo(function EventsList({ day, selectedEvents, handleSelectEvent
     [deleteEvent]
   );
 
-  const handleCollapse = (key) => {
+  const handleCollapse = useCallback((key) => {
     setOpenedEvent(key);
-  }
+  }, []);
+
+  useEffect(() => {
+    return () => setOpenedEvent(null)
+  }, [todoView]);
 
   return (
     <Grid.Container

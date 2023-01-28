@@ -46,7 +46,11 @@ export default function CalendarView() {
   const [events, setEvents] = useState(
     JSON.parse(localStorage.getItem('events')) || {}
   );
-
+  const [calendarExpanded, setCalendarExpanded] = useState(
+    localStorage.getItem('calendarExpanded')
+      ? JSON.parse(localStorage.getItem('calendarExpanded'))
+      : true
+  );
   const [sortBy, setSortBy] = useState(
     JSON.parse(localStorage.getItem('sortBy')) || 'nearest'
   );
@@ -133,6 +137,10 @@ export default function CalendarView() {
     [sortBy]
   );
 
+  useEffect(() => {
+    localStorage.setItem('calendarExpanded', calendarExpanded);
+  }, [calendarExpanded]);
+
   // Reset Selection
   useEffect(() => {
     !selectMode && setSelectedEvents([]);
@@ -190,6 +198,11 @@ export default function CalendarView() {
     if (todoView === value) return;
     setTodoView(value);
   };
+
+  const handleCalendarExpand = useCallback(() => {
+    calendarExpanded && setCurrentDay(null);
+    setCalendarExpanded((prev) => !prev);
+  }, [calendarExpanded]);
 
   const handleEventCheckClick = useCallback((event) => {
     setEvents((prev) => {
@@ -299,6 +312,28 @@ export default function CalendarView() {
     setCurrentDay(value);
   }, []);
 
+  const handleCurrentDayChange = useCallback(
+    (option) => {
+      if (!option) return;
+      const day = currentDay || dateTime;
+      const current = day.getDate();
+      const dateChange =
+        option === 'next'
+          ? current + 1
+          : option === 'prev'
+          ? current - 1
+          : current;
+      const nextDate = new Date(day).setDate(dateChange);
+      const newDate = new Date(nextDate);
+      if (newDate.getMonth() !== day.getMonth()) {
+        const month = new Date(newDate.getFullYear(), newDate.getMonth());
+        setCurrentMonth(month);
+      }
+      setCurrentDay(newDate);
+    },
+    [currentDay, dateTime]
+  );
+
   const currentEvents = useCallback(() => {
     const events =
       todoView === 'day'
@@ -336,14 +371,24 @@ export default function CalendarView() {
           maxWidth: '500px',
         }}
       >
-        <Grid css={{ padding: '28px 0px 18px 0', backgroundColor: '$white', zIndex: 10 }}>
+        <Grid
+          css={{
+            padding: '28px 0px 18px 0',
+            backgroundColor: '$white',
+            zIndex: 10,
+          }}
+        >
           <Grid css={{ margin: '0 auto 19px auto', width: 'fit-content' }}>
             <Logo width="47" height="15" />
           </Grid>
           <ViewNavigation active={todoView} handleClick={handleViewClick} />
         </Grid>
         {todoView === 'day' && (
-          <DailyView day={dateTime} handleDayChange={handleDayClick} />
+          <DailyView
+            day={dateTime}
+            handleDayChange={handleDayClick}
+            handleCurrentDayChange={handleCurrentDayChange}
+          />
         )}
         {todoView === 'month' && (
           <Grid
@@ -360,7 +405,8 @@ export default function CalendarView() {
               tileContent={setMark}
               currentDay={currentDay}
               handleCurrentDay={handleCurrentDay}
-              /* showNavigation={false} */
+              handleExpand={handleCalendarExpand}
+              expanded={calendarExpanded}
               showToolbar={true}
             />
           </Grid>
