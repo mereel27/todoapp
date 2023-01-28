@@ -18,6 +18,7 @@ export default memo(function MyCalendar({
   expanded,
   handleExpand,
   showToolbar,
+  picker,
   ...props
 }) {
   const [today] = useState(new Date());
@@ -133,7 +134,6 @@ export default memo(function MyCalendar({
           next2Label={<DoubleArrowRight size="1.3rem" />}
           prev2Label={<DoubleArrowLeft size="1.3rem" />}
         />
-        {showToolbar && (
           <Grid
             css={{
               display: 'flex',
@@ -150,6 +150,7 @@ export default memo(function MyCalendar({
               ripple={false}
               auto
               flat
+              css={{display: picker ? 'none' : ''}}
               iconRight={<Arrow />}
               iconRightCss={{
                 transform: calendarExpanded ? 'rotate(180deg)' : 'rotate(0)',
@@ -163,6 +164,8 @@ export default memo(function MyCalendar({
               flat
               onPress={handleTodayClick}
               css={{
+                marginLeft: picker ? 'auto' : '',
+                height: picker ? '30px' : '',
                 '&:not(:active)': {
                   transform: calendarExpanded ? 'scale(1)' : 'scale(0)',
                 },
@@ -171,7 +174,6 @@ export default memo(function MyCalendar({
               Today
             </Button>
           </Grid>
-        )}
       </Grid>
   );
 });

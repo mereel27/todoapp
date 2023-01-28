@@ -187,10 +187,10 @@ export const defaultFilters = [
 ];
 
 const filterMap = {
-  'cat_work': 'violet',
-  'cat_study': 'green',
-  'cat_entertainment': 'orange',
-  'cat_workout': 'red',
+  'cat_work': 'work',
+  'cat_study': 'study',
+  'cat_entertainment': 'entertainment',
+  'cat_workout': 'workout',
   'completed': true,
   'uncompleted': false,
 }
@@ -202,7 +202,7 @@ export const filterEvents = (events, currentFilters) => {
       return events.filter(ev => {
         return excluded.every(op => {
           if (op.includes('cat')) {
-            return ev.color !== filterMap[op];
+            return ev.category !== filterMap[op];
           }
           if (op.includes('completed')) {
             return ev.isDone !== filterMap[op]
@@ -215,7 +215,7 @@ export const filterEvents = (events, currentFilters) => {
       return events.filter(ev => {
         return included.every(op => {
           if (op.includes('cat')) {
-            return ev.color === filterMap[op];
+            return ev.category === filterMap[op];
           }
           if (op.includes('completed')) {
             return ev.isDone === filterMap[op]

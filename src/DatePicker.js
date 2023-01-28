@@ -33,6 +33,8 @@ export default memo(function DatePicker({
     handleSubmit(new Date(currentDate));
   };
 
+  const handleCurrentDay = useCallback((value) => setCurrentDate(value), []);
+
   const handleHoursChange = useCallback((value) => setHours(value), []);
   const handleMinutesChange = useCallback((value) => setMinutes(value), []);
 
@@ -51,11 +53,13 @@ export default memo(function DatePicker({
           <MyCalendar
             onClickDay={handleDayClick}
             currentDay={currentDate}
+            handleCurrentDay={handleCurrentDay}
             activeStartDate={currentDate}
             value={date}
             locale="en"
             minDetail="decade"
             className="date-picker__calendar"
+            picker
             /* showNeighboringMonth={true} */
           />
         </div>
