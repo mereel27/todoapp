@@ -39,6 +39,7 @@ export default function EventsControlPanel({
   handleMultiplyStatusChange,
   disabled,
   actionsDisabled,
+  filterDisabled,
   itemsQuantity,
 }) {
   const [isDialogOpen, setDialogOpen] = useState(false);
@@ -122,7 +123,7 @@ export default function EventsControlPanel({
           </Dropdown>
           <Dropdown>
             <Dropdown.Button
-              disabled={disabled}
+              disabled={filterDisabled}
               light
               css={{ padding: '0 $xs', flexBasis: '100px' }}
             >

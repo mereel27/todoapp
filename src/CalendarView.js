@@ -411,22 +411,21 @@ export default function CalendarView() {
             />
           </Grid>
         )}
-        {Object.values(events).flat().length > 0 && (
-          <EventsControlPanel
-            setSortBy={setSortBy}
-            sortBy={new Set([sortBy])}
-            filters={filters}
-            setFilters={setFilters}
-            handleSelect={handleSelectClick}
-            handleMultiplyDelete={handleMultiplyDelete}
-            handleMultiplyCategoryChange={handleMultiplyCategoryChange}
-            handleMultiplyStatusChange={handleMultiplyStatusChange}
-            isSelect={selectMode}
-            actionsDisabled={selectedEvents.length < 1}
-            disabled={currentEvents().length < 1}
-            itemsQuantity={selectedEvents.length}
-          />
-        )}
+        <EventsControlPanel
+          setSortBy={setSortBy}
+          sortBy={new Set([sortBy])}
+          filters={filters}
+          setFilters={setFilters}
+          handleSelect={handleSelectClick}
+          handleMultiplyDelete={handleMultiplyDelete}
+          handleMultiplyCategoryChange={handleMultiplyCategoryChange}
+          handleMultiplyStatusChange={handleMultiplyStatusChange}
+          isSelect={selectMode}
+          actionsDisabled={selectedEvents.length < 1}
+          disabled={currentEvents().length < 1}
+          filterDisabled={Object.values(events).flat().length < 1}
+          itemsQuantity={selectedEvents.length}
+        />
         <EventsList
           day={
             todoView === 'day'
