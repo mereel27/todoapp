@@ -411,7 +411,7 @@ export default function CalendarView() {
             />
           </Grid>
         )}
-        {allEvents.length > 0 && (
+        {Object.values(events).flat().length > 0 && (
           <EventsControlPanel
             setSortBy={setSortBy}
             sortBy={new Set([sortBy])}
