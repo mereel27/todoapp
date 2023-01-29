@@ -1,3 +1,26 @@
+# This todo app created with [React](https://github.com/facebook/react/) and styled with [NextUI](https://nextui.org/).
+- Create and track your todos
+- Manage your todos by categories and date
+- Create calendar events
+- More is coming
+
+
+# To do for todo :smiley: :
+- notifications
+- login and sync between devices
+- desktop view
+- dark theme
+- settings
+- and others
+
+
+# [Live preview](https://dazzling-torte-af8197.netlify.app/).
+
+![Screenshot](/src/img/Screenshot.png "Organize")
+
+
+This project was bootstrapped with [React](https://github.com/facebook/react/).
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

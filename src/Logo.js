@@ -7,15 +7,15 @@ export default function Logo(props) {
   return (
     <Grid css={{ display: 'flex', alignItems: 'center' }}>
       <LogoIcon
-        /* size={45} */ css={{
+        css={{
           transform: 'rotate(-10deg)',
           color: '$primary',
           margin: '$2 $5 $2 $2',
-          width: '45px',
-          height: '45px',
+          width: '30px',
+          height: '30px',
           '@media (max-width: 300px)': {
-            width: '35px',
-            height: '35px'
+            width: '25px',
+            height: '25px',
           },
         }}
       />
@@ -23,12 +23,12 @@ export default function Logo(props) {
         <Text
           span
           weight="black"
-          size="$xl"
+          size="$md"
           css={{
             letterSpacing: '$wider',
             color: '$blue900',
             '@media (max-width: 300px)': {
-              fontSize: '$lg',
+              fontSize: '$sm',
             },
           }}
         >
