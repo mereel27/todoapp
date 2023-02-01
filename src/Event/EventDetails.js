@@ -1,10 +1,10 @@
-import { eventColorsMap } from './utils';
+import { eventColorsMap } from '../utils/utils';
 import { Modal, Text, Card, Grid, styled } from '@nextui-org/react';
 import DeleteEventDialog from './DeleteEventDialog';
 import EventCheckbox from './EventCheckbox';
-import ModalButton from './ModalButton';
+import ModalButton from '../Buttons/ModalButton';
 import { Calendar } from 'iconsax-react';
-import { getDateObject, formatDate } from './utils';
+import { getDateObject, formatDate } from '../utils/utils';
 import { useState } from 'react';
 
 const CalendarIcon = styled(Calendar, {

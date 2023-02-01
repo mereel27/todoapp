@@ -1,8 +1,8 @@
 import { Grid, Text, Button } from '@nextui-org/react';
 import { Calendar, ArrowLeft2, ArrowRight2 } from 'iconsax-react';
 import { useState } from 'react';
-import { dateToString } from './utils';
-import DatePicker from './DatePicker';
+import { dateToString } from './utils/utils';
+import DatePicker from './DatePicker/DatePicker';
 
 const NavigationButton = ({ children, grow, left, right, ...props }) => {
   return (

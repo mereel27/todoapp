@@ -1,9 +1,9 @@
 import { useContext, useState, useCallback, memo, useEffect } from 'react';
 import { Grid, Container, Text } from '@nextui-org/react';
-import Event from './Event';
-import { getShortDate, getMonthName } from './utils';
-import EventDetails from './EventDetails';
-import { Context } from './CalendarView';
+import Event from '../Event/Event';
+import { getShortDate, getMonthName } from '../utils/utils';
+import EventDetails from '../Event/EventDetails';
+import { Context } from '../CalendarView';
 
 export default memo(function EventsList({ day, selectedEvents, handleSelectEvent }) {
   const [event, setEvent] = useState(null);

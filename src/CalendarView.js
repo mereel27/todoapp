@@ -7,19 +7,19 @@ import {
 } from 'react';
 import { Container, Grid, styled } from '@nextui-org/react';
 import DailyView from './DailyView';
-import EventsList from './EventsList';
-import BottomToolbar from './BottomToolbar';
-import EventMark from './EventMark';
+import EventsList from './EventList/EventsList';
+import BottomToolbar from './Navbar/BottomToolbar';
+import EventMark from './Event/EventMark';
 import {
   getDateWithCurrentTime,
   getNumericDate,
   sortEvents,
   defaultFilters,
   filterEvents,
-} from './utils';
-import ViewNavigation from './ViewNavigation';
-import MyCalendar from './MyCalendar';
-import EventsControlPanel from './EventsControlPanel';
+} from './utils/utils';
+import ViewNavigation from './Navbar/ViewNavigation';
+import MyCalendar from './Calendar/MyCalendar';
+import EventsControlPanel from './EventList/EventsControlPanel';
 
 const MarkContainer = styled('div', {
   width: '100%',

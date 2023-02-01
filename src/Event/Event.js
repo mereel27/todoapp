@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { getShortDate, getDateObject, eventColorsMap } from './utils';
+import { getShortDate, getDateObject, eventColorsMap } from '../utils/utils';
 import {
   Text,
   Collapse,
@@ -11,7 +11,7 @@ import {
 import { Trash } from 'iconsax-react';
 import DeleteEventDialog from './DeleteEventDialog';
 import { useContext, useState } from 'react';
-import { Context } from './CalendarView';
+import { Context } from '../CalendarView';
 import EventCheckbox from './EventCheckbox';
 
 export default memo(function Event({

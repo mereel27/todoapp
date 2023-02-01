@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, Navbar, styled } from '@nextui-org/react';
-import NewEvent from './NewEvent';
-import MenuIcon from './IconsComponents/MenuIcon';
+import NewEvent from '../NewEvent/NewEvent';
+import MenuIcon from '../Icons/MenuIcon';
 import { Add, Clock, Notification, Profile } from 'iconsax-react';
 
 const NavButton = styled(Button, {

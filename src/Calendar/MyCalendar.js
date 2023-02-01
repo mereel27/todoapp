@@ -1,11 +1,11 @@
 import Calendar from 'react-calendar';
 import { useState, useEffect, useRef, memo } from 'react';
-import DoubleArrowRight from './DoubleArrowRight';
-import DoubleArrowLeft from './DoubleArrowLeft';
+import DoubleArrowRight from '../Icons/DoubleArrowRight';
+import DoubleArrowLeft from '../Icons/DoubleArrowLeft';
 import { ArrowLeft2, ArrowRight2, Calendar as CalIcon } from 'iconsax-react';
-import { dateToString } from './utils';
+import { dateToString } from '../utils/utils';
 import { Button, Grid, styled } from '@nextui-org/react';
-import Arrow from './IconsComponents/Arrow';
+import Arrow from '../Icons/Arrow';
 
 const StyledCalendar = styled(Calendar, {});
 

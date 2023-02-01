@@ -1,6 +1,6 @@
 import { Button, styled, Radio } from '@nextui-org/react';
-import { eventColorsMap } from './utils';
-import TickIcon from './IconsComponents/TickIcon';
+import { eventColorsMap } from '../utils/utils';
+import TickIcon from '../Icons/TickIcon';
 
 const ColorButton = styled(Button, {
   variants: {

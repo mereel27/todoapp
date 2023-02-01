@@ -1,7 +1,7 @@
 import { Grid, Dropdown, Button, styled } from '@nextui-org/react';
 import { Sort, Filter, Task, Trash } from 'iconsax-react';
-import { defaultFilters } from './utils';
-import DeleteEventDialog from './DeleteEventDialog';
+import { defaultFilters } from '../utils/utils';
+import DeleteEventDialog from '../Event/DeleteEventDialog';
 import { useState } from 'react';
 
 const SortIcon = styled(Sort, {
@@ -131,7 +131,7 @@ export default function EventsControlPanel({
               Filter
             </Dropdown.Button>
             <Dropdown.Menu
-              color="secondary"
+              /* color="secondary" */
               aria-label="Filter"
               selectionMode="multiple"
               selectedKeys={filters}

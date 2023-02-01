@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState, useCallback } from 'react';
-import { formatDate, /* getNotificationTime, */ getNumericDate } from './utils';
-import { Context } from './CalendarView';
-import DatePicker from './DatePicker';
+import { formatDate, /* getNotificationTime, */ getNumericDate } from '../utils/utils';
+import { Context } from '../CalendarView';
+import DatePicker from '../DatePicker/DatePicker';
 import EventInput from './EventInput';
 import ItemList from './ItemList';
 import NotificationCheckboxGroup from './NotificationCheckboxGroup';
-import ColorButtons from './ColorButtons';
-import ModalButton from './ModalButton';
+import ColorButtons from '../Buttons/ColorButtons';
+import ModalButton from '../Buttons/ModalButton';
 import EventDescriptionInput from './EventDescriptionInput';
 import { Modal, Text, Checkbox, styled } from '@nextui-org/react';
 

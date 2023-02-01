@@ -1,8 +1,8 @@
 import { useState, memo, useCallback } from 'react';
-import { getTime } from './utils';
+import { getTime } from '../utils/utils';
 import { Modal } from '@nextui-org/react';
-import MyCalendar from './MyCalendar';
-import ModalButton from './ModalButton';
+import MyCalendar from '../Calendar/MyCalendar';
+import ModalButton from '../Buttons/ModalButton';
 import TimePicker from './TimePicker';
 
 export default memo(function DatePicker({

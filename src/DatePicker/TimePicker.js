@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Input, Grid, Text, Popover, styled } from '@nextui-org/react';
-import TimeButton from './TimeButton';
+import TimeButton from '../Buttons/TimeButton';
 import { Clock } from 'iconsax-react';
-import { hoursArray, minutesArray } from './utils';
+import { hoursArray, minutesArray } from '../utils/utils';
 
 const RightFlexbox = styled(Grid, {
   scrollbarColor: '#0072F5 transparent',
