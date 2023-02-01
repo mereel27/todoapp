@@ -35,7 +35,7 @@ const ActiveHighlight = styled('div', {
   backgroundColor: '$primary',
   transform: 'translateX(0%)',
   transition: 'transform .2s ease-in',
-  boxShadow: '0 4px 14px 0 #5EA2EF',
+  boxShadow: '0 4px 14px 0 var(--nextui-colors-primaryShadow)',
 });
 
 
@@ -49,7 +49,7 @@ export default function ViewNavigation({ active, handleClick }) {
         justifyContent: 'center',
         width: 'calc(100% - 20px)',
         borderRadius: '$lg',
-        backgroundColor: 'rgba(241, 243, 245, .8)',
+        backgroundColor: /* 'rgba(241, 243, 245, .8)' */ '$accents0' ,
         minHeight: '0',
         height: '50px',
         maxWidth: '350px',

@@ -29,6 +29,7 @@ export default function EventDescriptionInput(props) {
             outline: '2px solid $blue300',
             transition: 'outline 0s',
           },
+          backgroundColor: '$inputBg',
         },
         '.nextui-input-container': {
           height: 'unset',

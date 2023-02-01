@@ -1,7 +1,3 @@
-/* .App {
-  height: 100vh;
-} */
-
 .btnIconBg {
   border-radius: inherit;
   display: flex;
@@ -27,10 +23,6 @@
   flex-direction: column;
 }
 
-/* .react-calendar {
-  padding: 0 10px;
-} */
-
 .react-calendar button {
   font-size: inherit;
   font-family: inherit;
@@ -39,8 +31,8 @@
   position: relative;
 }
 
-.react-calendar__month-view__days, 
-.react-calendar__year-view__months, 
+.react-calendar__month-view__days,
+.react-calendar__year-view__months,
 .react-calendar__decade-view__years {
   margin: 2px;
 }
@@ -63,12 +55,12 @@
   height: 45px;
   padding-bottom: 12px;
   display: flex;
-  background-color: white;
   z-index: 1000;
   margin: 2px;
 }
 
-.react-calendar__navigation__label, .react-calendar__navigation__arrow {
+.react-calendar__navigation__label,
+.react-calendar__navigation__arrow {
   padding: 4px;
 }
 
@@ -81,16 +73,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--nextui-colors-blue900)
+  color: var(--nextui-colors-blue900);
 }
 
 .react-calendar__navigation__arrow:hover,
 .react-calendar__navigation__label:hover {
-  background-color: var(--nextui-colors-accents0);
+  background-color: var(--nextui-colors-accents1);
   /* border-radius: var(--nextui-radii-sm); */
 }
 
- .react-calendar__navigation__prev2-button {
+.react-calendar__navigation__prev2-button {
   border-top-left-radius: var(--nextui-radii-sm);
   border-bottom-left-radius: var(--nextui-radii-sm);
 }
@@ -315,8 +307,18 @@
     .react-calendar__tile--now,
     .current-day
   ):hover:after {
-  background-color: var(--nextui-colors-accents0);
+  background-color: var(--nextui-colors-dateHoverBg);
 }
+
+/* .date-picker__calendar
+  .react-calendar__tile:not(
+    .react-calendar__year-view__months__month,
+    .react-calendar__decade-view__years__year,
+    .react-calendar__tile--now,
+    .current-day
+  ):hover:after {
+  background-color: red;
+} */
 
 .react-calendar__tile.react-calendar__month-view__days__day--weekend:not(
     .current-day
@@ -339,7 +341,7 @@
     .react-calendar__year-view__months__month,
     .react-calendar__decade-view__years__year
   ):hover {
-    color: var(--nextui-colors-primary);
+  color: var(--nextui-colors-primary);
 }
 
 .modal-container {

@@ -22,6 +22,7 @@ export default function EventInput(props) {
           color: props.name === 'notification' ? 'transparent' : '',
         },
         '.nextui-input-wrapper': {
+          backgroundColor: '$inputBg',
           borderRadius: '$md',
           width: '100%',
           overflowX: 'hidden',
@@ -48,7 +49,7 @@ export default function EventInput(props) {
             right: 0,
             width: '20px',
             height: '100%',
-            background: 'linear-gradient(to right, transparent, var(--nextui--inputColor))'
+            background: 'linear-gradient(to right, transparent, var(--nextui-colors-inputBg))'
           }
         } : {
           padding: '0 10px 0 20px',

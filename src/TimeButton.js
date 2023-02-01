@@ -14,7 +14,7 @@ const TimeBtn = styled(Button, {
         color: '$white',
       },
       time: {
-        backgroundColor: '$accents0',
+        backgroundColor: '$inputBg',
         color: '$text',
       },
     },

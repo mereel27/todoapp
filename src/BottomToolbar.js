@@ -47,7 +47,6 @@ export default function BottomToolbar() {
       <NewEvent open={open} handleClose={handleClose} />
       <Navbar
         disableScrollHandler
-        disableBlur
         css={{
           position: 'fixed',
           left: 0,
@@ -58,10 +57,6 @@ export default function BottomToolbar() {
           maxWidth: '500px',
           margin: '0 auto',
           zIndex: '1000',
-        }}
-        containerCss={{
-          background: 'rgba(255, 255, 255, 0.5)',
-          backdropFilter: 'blur(10px)',
         }}
       >
         <Navbar.Content

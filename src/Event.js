@@ -62,8 +62,8 @@ export default memo(function Event({
           opacity: deleted ? '0' : '',
           flexGrow: 1,
           transform: deleted ? 'translateX(50%)' : '',
-          /* transition: 'opacity .25s, transform .25s, background-color .2s', */
-          backgroundColor: isSelected ? '$primaryLight' : '$white',
+          transition: 'opacity .25s, transform .25s',
+          backgroundColor: isSelected ? '$primaryLight' : '$background',
           /* padding: '$lg $sm', */
           userSelect: 'none',
           '[aria-disabled="true"]': {

@@ -122,6 +122,7 @@ export default function TimePicker({hours, minutes, handleHoursChange, handleMin
               '.nextui-input-wrapper': {
                 /* borderRadius: '4px', */
                 height: '45px',
+                backgroundColor: '$inputBg',
               },
             }}
           />
@@ -130,6 +131,7 @@ export default function TimePicker({hours, minutes, handleHoursChange, handleMin
           css={{
             overflowY: 'hidden',
             border: '2px solid $accents0',
+            backgroundColor: '$background'
             /* borderRadius: '3px', */
           }}
         >

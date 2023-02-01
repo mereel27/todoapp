@@ -138,7 +138,7 @@ export default memo(function MyCalendar({
             css={{
               display: 'flex',
               width: '100%',
-              backgroundColor: '$white',
+              /* backgroundColor: '$white', */
               zIndex: 100,
               justifyContent: 'space-between',
               paddingTop: calendarExpanded ? '$xs' : '',

@@ -6,7 +6,6 @@ import {
   useCallback,
 } from 'react';
 import { Container, Grid, styled } from '@nextui-org/react';
-import Logo from './Logo';
 import DailyView from './DailyView';
 import EventsList from './EventsList';
 import BottomToolbar from './BottomToolbar';
@@ -373,14 +372,14 @@ export default function CalendarView() {
       >
         <Grid
           css={{
-            padding: '28px 0px 18px 0',
-            backgroundColor: '$white',
+            padding: '$7 0',
+            backgroundColor: '$background',
             zIndex: 10,
           }}
         >
-          <Grid css={{ margin: '0 auto 19px auto', width: 'fit-content' }}>
+          {/* <Grid css={{ margin: '0 auto 19px auto', width: 'fit-content' }}>
             <Logo width="47" height="15" />
-          </Grid>
+          </Grid> */}
           <ViewNavigation active={todoView} handleClick={handleViewClick} />
         </Grid>
         {todoView === 'day' && (

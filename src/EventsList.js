@@ -62,7 +62,7 @@ export default memo(function EventsList({ day, selectedEvents, handleSelectEvent
         css={{
           p: '$xl $xl 90px',
           backgroundColor: '$eventsBackground',
-          borderRadius: '$xs',
+          borderRadius: '$md',
           flexGrow: 1,
           '@media (max-width: 450px)': {
             p: '$xl $md 90px',

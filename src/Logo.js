@@ -34,7 +34,7 @@ export default function Logo(props) {
         >
           ORGANIZE
         </Text>
-        <Text
+        {/* <Text
           span
           small
           em
@@ -47,7 +47,7 @@ export default function Logo(props) {
           }}
         >
           Yourself
-        </Text>
+        </Text> */}
       </Grid>
     </Grid>
   );

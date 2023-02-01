@@ -5,7 +5,7 @@ const Mark = styled('div', {
   height: '8px',
   borderRadius: '50%',
   flexShrink: 0,
-  border: '1px solid white',
+  border: '1px solid $background',
   boxSizing: 'border-box',
   variants: {
     color: {

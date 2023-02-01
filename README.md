@@ -6,6 +6,7 @@
 
 
 # To do for todo :smiley: :
+- routes
 - notifications
 - login and sync between devices
 - desktop view
@@ -13,7 +14,7 @@
 - settings
 - and others
 
-
+Also used - [iconsax-react](https://iconsax-react.pages.dev/);
 # [Live preview](https://dazzling-torte-af8197.netlify.app/).
 
 ![Screenshot](/src/img/Screenshot.png "Organize")
