@@ -14,7 +14,9 @@
 - settings
 - and others
 
-Also used - [iconsax-react](https://iconsax-react.pages.dev/);
+Also used:
+[iconsax-react](https://iconsax-react.pages.dev/)
+[react-calendar](https://projects.wojtekmaj.pl/react-calendar/)
 # [Live preview](https://dazzling-torte-af8197.netlify.app/).
 
 ![Screenshot](/src/img/Screenshot.png "Organize")
