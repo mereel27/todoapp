@@ -18,7 +18,7 @@ const lightTheme = createTheme({
       inputPlaceholder: 'rgba(124, 135, 165, 0.598)',
       inputBg: '$accents0',
       dateHoverBg: '$accents0',
-      eventsBackground: '$accents0',
+      eventsBackground: 'rgba(241, 243, 245, 0.5)',
       violetEvent: '#7828C8',
       greenEvent: '#17C964',
       orangeEvent: '#F5A524',
