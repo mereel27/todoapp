@@ -17,7 +17,7 @@
 Also used:
 [iconsax-react](https://iconsax-react.pages.dev/)
 [react-calendar](https://projects.wojtekmaj.pl/react-calendar/)
-# [Live preview](https://dazzling-torte-af8197.netlify.app/).
+# [Live preview](https://todo-organize.netlify.app/).
 
 ![Screenshot](/src/img/Screenshot.png "Organize")
 
